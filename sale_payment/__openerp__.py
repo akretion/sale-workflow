@@ -28,7 +28,9 @@
     'website': 'http://www.akretion.com',
     'license': 'AGPL-3',
     'depends': ['account_payment_sale'],
-    'data': ['view/sale_view.xml'],
+    'data': [
+        'view/sale_view.xml',
+        'view/statement_view.xml'
+    ],
     'installable': True,
-    'active': False,
 }
