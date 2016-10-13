@@ -42,6 +42,7 @@ class SaleOrder(models.Model):
                 amount = from_currency.compute(amount, self.currency_id)
             paid_amount += amount
         self.residual = self.amount_total - paid_amount
+        self.amount_paid = paid_amount
             
 
     payment_ids = fields.Many2many(
@@ -51,5 +52,8 @@ class SaleOrder(models.Model):
         copy=False,
     )
     residual = fields.Float(
+        compute='_get_residual',
+        digits_compute=dp.get_precision('Account'))
+    amount_paid = fields.Float(
         compute='_get_residual',
         digits_compute=dp.get_precision('Account'))
