@@ -31,6 +31,12 @@ class SaleOrder(models.Model):
         self.warehouse_id = self.type_id.warehouse_id
         self.picking_policy = self.type_id.picking_policy
         self.order_policy = self.type_id.order_policy
+        if self.type_id.payment_term_id:
+            self.payment_term = self.type_id.payment_term_id.id
+        if self.type_id.pricelist_id:
+            self.pricelist_id = self.type_id.pricelist_id.id
+        if self.type_id.incoterm_id:
+            self.incoterm = self.type_id.incoterm_id.id
 
     @api.model
     def create(self, vals):
@@ -51,6 +57,8 @@ class SaleOrder(models.Model):
     @api.model
     def _prepare_invoice(self, order, line_ids):
         res = super(SaleOrder, self)._prepare_invoice(order, line_ids)
+        if order.type_id:
+            res['sale_type_id'] = order.type_id.id
         if order.type_id.journal_id:
             res['journal_id'] = order.type_id.journal_id.id
         return res

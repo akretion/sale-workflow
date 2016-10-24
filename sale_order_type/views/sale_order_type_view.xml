@@ -19,6 +19,7 @@
                         <group>
                             <group>
                                 <field name="warehouse_id" />
+                                <field name="company_id" />
                                 <field name="sequence_id" />
                             </group>
                             <group>
@@ -27,6 +28,9 @@
                                 <field name="picking_policy" />
                                 <field name="order_policy" />
                                 <field name="invoice_state" />
+                                <field name="payment_term_id" />
+                                <field name="pricelist_id" />
+                                <field name="incoterm_id" />
                             </group>
                         </group>
                         <group>
@@ -42,6 +46,7 @@
             <field name="model">sale.order.type</field>
             <field name="arch" type="xml">
                 <tree string="Type">
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="warehouse_id"/>
                     <field name="sequence_id"/>
@@ -68,6 +73,9 @@
                     <field name="picking_policy" />
                     <field name="order_policy" />
                     <field name="invoice_state" />
+                    <field name="payment_term_id" />
+                    <field name="pricelist_id" />
+                    <field name="incoterm_id" />
                     <group expand="0" string="Group By">
                         <filter string="Warehouse" domain="[]"
                                 context="{'group_by':'warehouse_id'}" />
@@ -83,6 +91,12 @@
                                 context="{'group_by':'order_policy'}" />
                         <filter string="Invoice Control" domain="[]"
                                 context="{'group_by':'invoice_state'}" />
+                        <filter string="Payment Term" domain="[]"
+                                context="{'group_by':'payment_term_id'}" />
+                        <filter string="Price List" domain="[]"
+                                context="{'group_by':'pricelist_id'}" />
+                        <filter string="Incoterm" domain="[]"
+                                context="{'group_by':'incoterm_id'}" />
                     </group>
                 </search>
             </field>

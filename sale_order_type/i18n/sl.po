@@ -3,13 +3,14 @@
 # * sale_order_type
 # 
 # Translators:
-# Matjaž Mozetič <m.mozetic@matmoz.si>, 2015
+# Hotellook, 2014
+# Matjaž Mozetič <m.mozetic@matmoz.si>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: sale-workflow (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-09 12:27+0000\n"
-"PO-Revision-Date: 2015-09-07 14:31+0000\n"
+"POT-Creation-Date: 2016-10-04 13:41+0000\n"
+"PO-Revision-Date: 2016-10-06 08:23+0000\n"
 "Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
 "Language-Team: Slovenian (http://www.transifex.com/oca/OCA-sale-workflow-8-0/language/sl/)\n"
 "MIME-Version: 1.0\n"
@@ -30,6 +31,11 @@ msgstr "<p class=\"oe_view_nocontent_create\">Kliknite za nastavitev novega tipa
 #: field:sale.order.type,journal_id:0
 msgid "Billing Journal"
 msgstr "Dnevnik obračuna"
+
+#. module: sale_order_type
+#: field:sale.order.type,company_id:0
+msgid "Company"
+msgstr "Družba"
 
 #. module: sale_order_type
 #: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view
@@ -53,6 +59,11 @@ msgid "Description"
 msgstr "Opis"
 
 #. module: sale_order_type
+#: field:sale.order.type,display_name:0
+msgid "Display Name"
+msgstr "Prikazni naziv"
+
+#. module: sale_order_type
 #: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view
 #: field:sale.order.type,sequence_id:0
 msgid "Entry Sequence"
@@ -69,6 +80,12 @@ msgid "ID"
 msgstr "ID"
 
 #. module: sale_order_type
+#: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view
+#: field:sale.order.type,incoterm_id:0
+msgid "Incoterm"
+msgstr "Incoterm"
+
+#. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_account_invoice
 msgid "Invoice"
 msgstr "Račun"
@@ -78,6 +95,11 @@ msgstr "Račun"
 #: field:sale.order.type,invoice_state:0
 msgid "Invoice Control"
 msgstr "Nadzor računov"
+
+#. module: sale_order_type
+#: field:sale.order.type,__last_update:0
+msgid "Last Modified on"
+msgstr "Zadnjič spremenjeno"
 
 #. module: sale_order_type
 #: field:sale.order.type,write_uid:0
@@ -105,9 +127,25 @@ msgid "Partner"
 msgstr "Partner"
 
 #. module: sale_order_type
+#: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view
+#: field:sale.order.type,payment_term_id:0
+msgid "Payment Term"
+msgstr "Plačilni pogoj"
+
+#. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_stock_picking
 msgid "Picking List"
 msgstr "Zbirnik"
+
+#. module: sale_order_type
+#: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view
+msgid "Price List"
+msgstr "Cenik"
+
+#. module: sale_order_type
+#: field:sale.order.type,pricelist_id:0
+msgid "Pricelist"
+msgstr "Cenik"
 
 #. module: sale_order_type
 #: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view
@@ -119,6 +157,11 @@ msgstr "Dnevnik dobropisov"
 #: field:res.partner,sale_type:0
 msgid "Sale Order Type"
 msgstr "Tip prodajnega naloga"
+
+#. module: sale_order_type
+#: field:account.invoice,sale_type_id:0
+msgid "Sale Type"
+msgstr "Tip prodaje"
 
 #. module: sale_order_type
 #: model:ir.model,name:sale_order_type.model_sale_order
@@ -135,6 +178,11 @@ msgstr "Tip prodajnega naloga"
 #: model:ir.ui.menu,name:sale_order_type.sot_sale_order_type_menu
 msgid "Sales Order Types"
 msgstr "Tipi prodajnega naloga"
+
+#. module: sale_order_type
+#: field:sale.order.type,sequence:0
+msgid "Sequence"
+msgstr "Zaporedje"
 
 #. module: sale_order_type
 #: view:sale.order.type:sale_order_type.sot_sale_order_type_search_view

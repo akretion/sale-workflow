@@ -3,14 +3,15 @@
 # * sale_payment_method
 # 
 # Translators:
+# Hotellook, 2014
 # Rudolf Schnapka <rs@techno-flex.de>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: sale-workflow (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-10 01:51+0000\n"
-"PO-Revision-Date: 2016-01-18 12:56+0000\n"
-"Last-Translator: Rudolf Schnapka <rs@techno-flex.de>\n"
+"POT-Creation-Date: 2016-10-04 13:41+0000\n"
+"PO-Revision-Date: 2016-10-04 09:43+0000\n"
+"Last-Translator: OCA Transbot <transbot@odoo-community.org>\n"
 "Language-Team: German (http://www.transifex.com/oca/OCA-sale-workflow-8-0/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: sale_payment_method
-#: code:addons/sale_payment_method/sale.py:85
+#: field:sale.order,amount_paid:0
+msgid "Amount Paid"
+msgstr ""
+
+#. module: sale_payment_method
+#: code:addons/sale_payment_method/sale.py:86
 #, python-format
 msgid ""
 "An automatic payment can not be created for the sale order %s because it has"
@@ -27,7 +33,7 @@ msgid ""
 msgstr "Eine automatische Zahlung kann für den Verkaufsauftrag %s nicht angelegt werden, da keine Zahlweise angegeben ist."
 
 #. module: sale_payment_method
-#: code:addons/sale_payment_method/sale.py:91
+#: code:addons/sale_payment_method/sale.py:92
 #, python-format
 msgid ""
 "An automatic payment should be created for the sale order %s but the payment"
@@ -35,7 +41,12 @@ msgid ""
 msgstr "Eine Automatische Zahlung soll für den Verkaufsauftrag %s angelegt werden, aber zur Zahlweise '%s' ist kein Journal festgelegt."
 
 #. module: sale_payment_method
-#: code:addons/sale_payment_method/sale.py:69
+#: field:sale.order,residual:0
+msgid "Balance"
+msgstr ""
+
+#. module: sale_payment_method
+#: code:addons/sale_payment_method/sale.py:70
 #, python-format
 msgid ""
 "Cannot cancel this sales order because automatic payment entries are linked "
@@ -74,6 +85,11 @@ msgid "Default payment term of a sale order using this method."
 msgstr "Vorgabe-Zahlungsbedingung eines Verkaufsauftrags bei Verwendung dieser Methode."
 
 #. module: sale_payment_method
+#: field:payment.method,display_name:0
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: sale_payment_method
 #: view:payment.method:sale_payment_method.payment_method_view_form
 msgid ""
 "Even if the E-commerce backend receives a payment for a sale order,\n"
@@ -106,6 +122,11 @@ msgstr "Journal-Posten"
 #: view:payment.method:sale_payment_method.payment_method_view_form
 msgid "Journal for payment"
 msgstr "Journal für Zahlungen"
+
+#. module: sale_payment_method
+#: field:payment.method,__last_update:0
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
 
 #. module: sale_payment_method
 #: field:payment.method,write_uid:0
@@ -156,13 +177,13 @@ msgid "Payments Entries"
 msgstr "Zahlungs-Posten"
 
 #. module: sale_payment_method
-#: code:addons/sale_payment_method/sale.py:145
+#: code:addons/sale_payment_method/sale.py:149
 #, python-format
 msgid "Please activate the sequence of the journal %s."
 msgstr "Aktivieren Sie bitte den Nummernkreis im Journal %s."
 
 #. module: sale_payment_method
-#: code:addons/sale_payment_method/sale.py:142
+#: code:addons/sale_payment_method/sale.py:146
 #, python-format
 msgid "Please define a sequence on the journal %s."
 msgstr "Legen Sie bitte einen Nummernkreis für das Journal %s fest."

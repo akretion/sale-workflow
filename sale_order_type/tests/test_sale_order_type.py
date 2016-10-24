@@ -23,6 +23,10 @@ class TestSaleOrderType(common.TransactionCase):
         self.refund_journal = self.env.ref('account.refund_sales_journal')
         self.warehouse = self.env.ref('stock.stock_warehouse_shop0')
         self.product = self.env.ref('product.product_product_4')
+        self.immediate_payment = self.env.ref(
+            'account.account_payment_term_immediate')
+        self.sale_pricelist = self.env.ref('product.pricelist_type_sale')
+        self.free_carrier = self.env.ref('stock.incoterm_FCA')
         self.sale_type = self.sale_type_model.create({
             'name': 'Test Sale Order Type',
             'sequence_id': self.sequence.id,
@@ -32,6 +36,9 @@ class TestSaleOrderType(common.TransactionCase):
             'picking_policy': 'one',
             'order_policy': 'picking',
             'invoice_state': '2binvoiced',
+            'payment_term_id': self.immediate_payment.id,
+            'pricelist_id': self.sale_pricelist.id,
+            'incoterm_id': self.free_carrier.id,
         })
         self.partner.sale_type = self.sale_type
 
@@ -49,6 +56,10 @@ class TestSaleOrderType(common.TransactionCase):
         self.assertEqual(self.sale_type.picking_policy,
                          sale_order.picking_policy)
         self.assertEqual(self.sale_type.order_policy, sale_order.order_policy)
+        self.assertEqual(self.sale_type.payment_term_id,
+                         sale_order.payment_term)
+        self.assertEqual(self.sale_type.pricelist_id, sale_order.pricelist_id)
+        self.assertEqual(self.sale_type.incoterm_id, sale_order.incoterm)
 
     def test_sale_order_confirm(self):
         sale_order_dict = self.sale_order_model.onchange_partner_id(
@@ -75,3 +86,18 @@ class TestSaleOrderType(common.TransactionCase):
             for invoice in self.invoice_model.browse(invoices):
                 self.assertEqual(
                     self.sale_type.journal_id, invoice.journal_id)
+                self.assertEqual(
+                    self.sale_type.id, invoice.sale_type_id.id)
+
+    def test_invoice_onchange_type(self):
+        invoice = self.invoice_model.new({'sale_type_id': self.sale_type.id})
+        invoice.onchange_sale_type_id()
+        self.assertEqual(self.sale_type.payment_term_id,
+                         invoice.payment_term)
+        self.assertEqual(self.sale_type.journal_id, invoice.journal_id)
+
+    def test_invoice_onchange_partner(self):
+        onchange_partner = self.invoice_model.onchange_partner_id(
+            'out_invoice', self.partner.id)
+        self.assertEqual(self.sale_type.id,
+                         onchange_partner['value']['type_id'])

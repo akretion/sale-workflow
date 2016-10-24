@@ -3,12 +3,13 @@
 # * sale_automatic_workflow
 # 
 # Translators:
+# Pierre Verkest <pverkest@anybox.fr>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: sale-workflow (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-02 01:51+0000\n"
-"PO-Revision-Date: 2015-12-01 14:36+0000\n"
+"POT-Creation-Date: 2016-09-11 16:48+0000\n"
+"PO-Revision-Date: 2016-09-16 21:46+0000\n"
 "Last-Translator: OCA Transbot <transbot@odoo-community.org>\n"
 "Language-Team: French (http://www.transifex.com/oca/OCA-sale-workflow-8-0/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -81,6 +82,12 @@ msgid "Deliver each product when available"
 msgstr "Livrer chaque article dès disponibilité"
 
 #. module: sale_automatic_workflow
+#: field:automatic.workflow.job,display_name:0
+#: field:sale.workflow.process,display_name:0
+msgid "Display Name"
+msgstr "Nom à afficher"
+
+#. module: sale_automatic_workflow
 #: field:sale.workflow.process,invoice_date_is_order_date:0
 msgid "Force Invoice Date"
 msgstr "Forcer la date de facturation"
@@ -110,6 +117,12 @@ msgstr "Politique de facturation"
 #: field:sale.workflow.process,invoice_quantity:0
 msgid "Invoice on"
 msgstr "Facturer sur"
+
+#. module: sale_automatic_workflow
+#: field:automatic.workflow.job,__last_update:0
+#: field:sale.workflow.process,__last_update:0
+msgid "Last Modified on"
+msgstr "Dernière modification le"
 
 #. module: sale_automatic_workflow
 #: field:automatic.workflow.job,write_uid:0
@@ -181,6 +194,11 @@ msgid "Sale Workflow Process"
 msgstr "Flux automatique de vente"
 
 #. module: sale_automatic_workflow
+#: field:sale.workflow.process,property_journal_id:0
+msgid "Sales Journal"
+msgstr ""
+
+#. module: sale_automatic_workflow
 #: model:ir.model,name:sale_automatic_workflow.model_sale_order
 msgid "Sales Order"
 msgstr "Bon de commande"
@@ -189,6 +207,16 @@ msgstr "Bon de commande"
 #: field:sale.workflow.process,section_id:0
 msgid "Sales Team"
 msgstr "Équipe commerciale"
+
+#. module: sale_automatic_workflow
+#: help:sale.workflow.process,property_journal_id:0
+msgid "Set default journal to use on invoice"
+msgstr ""
+
+#. module: sale_automatic_workflow
+#: field:sale.workflow.process,ship_only_available:0
+msgid "Ship only available goods"
+msgstr ""
 
 #. module: sale_automatic_workflow
 #: selection:sale.workflow.process,invoice_quantity:0
@@ -221,6 +249,13 @@ msgid "Warning Message"
 msgstr "Message d'avertissement"
 
 #. module: sale_automatic_workflow
+#: help:sale.workflow.process,ship_only_available:0
+msgid ""
+"When checked, the available quantity is shipped, and if so, a backorder is "
+"created with the rest."
+msgstr ""
+
+#. module: sale_automatic_workflow
 #: help:sale.workflow.process,invoice_date_is_order_date:0
 msgid "When checked, the invoice date will be the same than the order's date"
 msgstr "Si activé, la date de facturation sera identique à la date de la commande."
@@ -231,7 +266,7 @@ msgid "Workflow Options"
 msgstr "Options du flux automatique"
 
 #. module: sale_automatic_workflow
-#: code:addons/sale_automatic_workflow/sale.py:64
+#: code:addons/sale_automatic_workflow/sale.py:66
 #, python-format
 msgid "Workflow Warning"
 msgstr "Message d'avertissement"
