@@ -8,7 +8,7 @@
     'author': "Akretion,Odoo Community Association (OCA)",
     'website': 'http://www.akretion.com',
     'license': 'AGPL-3',
-    'depends': ['account_payment_sale'],
+    'depends': ['sale'],
     'data': [
         'view/sale_view.xml',
         'view/statement_view.xml'
