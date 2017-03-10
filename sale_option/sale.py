@@ -56,6 +56,12 @@ class SaleOrderLine(models.Model):
             fiscal_position, flag, context)
         if product:
             res['value']['base_price_unit'] = res['value']['price_unit']
+        # When you change products on a command line that contains
+        # lines of operations then you must delete these lines of operations
+        sale_line = self.browse(cr, uid, ids, context=context)
+        if (sale_line.product_id.id != product and
+                sale_line.optional_bom_line_ids):
+            res['value']['optional_bom_line_ids'] = []
         return res
 
     @api.multi
