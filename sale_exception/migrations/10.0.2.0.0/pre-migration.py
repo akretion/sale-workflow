@@ -8,5 +8,14 @@ from openupgradelib import openupgrade
 @openupgrade.migrate(use_env=True)
 def migrate(env, version):
     cr = env.cr
-    openupgrade.rename_tables(cr, [('sale_exception', 'exception_rule')])
-    openupgrade.rename_models(cr, [('sale.exception', 'exception.rule')])
+    # Update exception_rule for sale.order and sale.order.line:
+    cr.execute(
+        '''UPDATE exception_rule
+        SET rule_group = 'sale'
+        WHERE model ='sale.order' or model = 'sale.order.line'
+        ''')
+    cr.execute(
+        '''UPDATE ir_model_data
+        SET model = 'exception.rule'
+        WHERE model ='sale.exception'
+        ''')
