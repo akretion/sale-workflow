@@ -14,6 +14,7 @@
     ],
     "data": [
         "views/sale.xml",
+        "views/account_move.xml",
     ],
     "installable": True,
 }

@@ -34,6 +34,12 @@ class SaleOrder(models.Model):
                 self.env["sale.order.line"]._create_discount_lines(order=self)
         return res
 
+    def _prepare_invoice(self):
+        self.ensure_one()
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        invoice_vals["global_discount_amount"] = self.global_discount_amount
+        return invoice_vals
+
 
 class SaleOrderLine(models.Model):
     _inherit = ["sale.order.line", "discount.line.mixin"]
@@ -92,3 +98,10 @@ class SaleOrderLine(models.Model):
                                    "tax_id": tax_ids})
         discount_line.unlink()
         self.create(discount_line_vals)
+
+    def _prepare_invoice_line(self, **optional_values):
+        self.ensure_one()
+        invoice_line_vals = super(SaleOrderLine, self)._prepare_invoice_line(
+            **optional_values)
+        invoice_line_vals["is_discount_line"] = self.is_discount_line
+        return invoice_line_vals
