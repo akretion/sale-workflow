@@ -11,88 +11,124 @@ class TestSaleGlobalDiscountAmount(SavepointCase):
         product01 = cls.env.ref("product.consu_delivery_01")
         product03 = cls.env.ref("product.consu_delivery_03")
         cls.discount_product = cls.env.ref(
-            "account_global_discount_amount.discount_product")
+            "account_global_discount_amount.discount_product"
+        )
         type_current_liability = cls.env.ref(
-            "account.data_account_type_current_liabilities")
+            "account.data_account_type_current_liabilities"
+        )
         output_vat10_acct = cls.env["account.account"].create(
-            {"name": "10",
-             "code": "10",
-             "user_type_id": type_current_liability.id})
+            {"name": "10", "code": "10", "user_type_id": type_current_liability.id}
+        )
         output_vat20_acct = cls.env["account.account"].create(
-            {"name": "20",
-             "code": "20",
-             "user_type_id": type_current_liability.id})
-        tax_group_vat10 = cls.env["account.tax.group"].create({
-            "name": "VAT10"})
-        tax_group_vat20 = cls.env["account.tax.group"].create({
-            "name": "VAT20"})
-        cls.vat10 = cls.env["account.tax"].create({
-            "name": "TEST 10%",
-            "type_tax_use": "sale",
-            "amount_type": "percent",
-            "amount": 10.00,
-            "tax_group_id": tax_group_vat10.id,
-            "invoice_repartition_line_ids": [
-                (0, 0, {"factor_percent": 100.0, "repartition_type": "base"}),
-                (0, 0, {"factor_percent": 100.0, "repartition_type": "tax",
-                        "account_id": output_vat10_acct.id})],
-        })
-        cls.vat20 = cls.env["account.tax"].create({
-            "name": "TEST 20%",
-            "type_tax_use": "sale",
-            "amount_type": "percent",
-            "amount": 20.00,
-            "tax_group_id": tax_group_vat20.id,
-            "invoice_repartition_line_ids": [
-                (0, 0, {"factor_percent": 100.0, "repartition_type": "base"}),
-                (0, 0, {"factor_percent": 100.0, "repartition_type": "tax",
-                        "account_id": output_vat20_acct.id})],
-        })
+            {"name": "20", "code": "20", "user_type_id": type_current_liability.id}
+        )
+        tax_group_vat10 = cls.env["account.tax.group"].create({"name": "VAT10"})
+        tax_group_vat20 = cls.env["account.tax.group"].create({"name": "VAT20"})
+        cls.vat10 = cls.env["account.tax"].create(
+            {
+                "name": "TEST 10%",
+                "type_tax_use": "sale",
+                "amount_type": "percent",
+                "amount": 10.00,
+                "tax_group_id": tax_group_vat10.id,
+                "invoice_repartition_line_ids": [
+                    (0, 0, {"factor_percent": 100.0, "repartition_type": "base"}),
+                    (
+                        0,
+                        0,
+                        {
+                            "factor_percent": 100.0,
+                            "repartition_type": "tax",
+                            "account_id": output_vat10_acct.id,
+                        },
+                    ),
+                ],
+            }
+        )
+        cls.vat20 = cls.env["account.tax"].create(
+            {
+                "name": "TEST 20%",
+                "type_tax_use": "sale",
+                "amount_type": "percent",
+                "amount": 20.00,
+                "tax_group_id": tax_group_vat20.id,
+                "invoice_repartition_line_ids": [
+                    (0, 0, {"factor_percent": 100.0, "repartition_type": "base"}),
+                    (
+                        0,
+                        0,
+                        {
+                            "factor_percent": 100.0,
+                            "repartition_type": "tax",
+                            "account_id": output_vat20_acct.id,
+                        },
+                    ),
+                ],
+            }
+        )
 
         single_tax_order_line_vals = [
-            (0, 0, {
-                "product_id": product01.id,
-                "product_uom_qty": 1.0,
-                "name": "Line 1",
-                "price_unit": 200.00,
-                "tax_id": [(6, 0, [cls.vat10.id])],
-            })
+            (
+                0,
+                0,
+                {
+                    "product_id": product01.id,
+                    "product_uom_qty": 1.0,
+                    "name": "Line 1",
+                    "price_unit": 200.00,
+                    "tax_id": [(6, 0, [cls.vat10.id])],
+                },
+            )
         ]
-        cls.sale_single_tax = cls.env["sale.order"].create({
-            "partner_id": partner.id,
-            "order_line": single_tax_order_line_vals,
-            "global_discount_amount": 30.00,
-        })
+        cls.sale_single_tax = cls.env["sale.order"].create(
+            {
+                "partner_id": partner.id,
+                "order_line": single_tax_order_line_vals,
+                "global_discount_amount": 30.00,
+            }
+        )
         multi_tax_order_line_vals = [
-            (0, 0, {
-                "product_id": product01.id,
-                "product_uom_qty": 1.0,
-                "name": "Line 1",
-                "price_unit": 200.00,
-                "tax_id": [(6, 0, [cls.vat10.id])],
-            }),
-            (0, 0, {
-                "product_id": product03.id,
-                "product_uom_qty": 1.0,
-                "name": "Line 1",
-                "price_unit": 150.00,
-                "tax_id": [(6, 0, [cls.vat20.id])],
-            })
+            (
+                0,
+                0,
+                {
+                    "product_id": product01.id,
+                    "product_uom_qty": 1.0,
+                    "name": "Line 1",
+                    "price_unit": 200.00,
+                    "tax_id": [(6, 0, [cls.vat10.id])],
+                },
+            ),
+            (
+                0,
+                0,
+                {
+                    "product_id": product03.id,
+                    "product_uom_qty": 1.0,
+                    "name": "Line 1",
+                    "price_unit": 150.00,
+                    "tax_id": [(6, 0, [cls.vat20.id])],
+                },
+            ),
         ]
-        cls.sale_multi_tax = cls.env["sale.order"].create({
-            "partner_id": partner.id,
-            "order_line": multi_tax_order_line_vals,
-            "global_discount_amount": 50.00,
-        })
+        cls.sale_multi_tax = cls.env["sale.order"].create(
+            {
+                "partner_id": partner.id,
+                "order_line": multi_tax_order_line_vals,
+                "global_discount_amount": 50.00,
+            }
+        )
 
     def test_create_sale_single_tax_with_global_discount(self):
         self.assertEqual(self.sale_single_tax.amount_total, 187.00)
         self.assertEqual(self.sale_single_tax.amount_tax, 17.00)
         self.assertEqual(self.sale_single_tax.global_discount_ok, True)
-        discount_order_lines = self.env["sale.order.line"].search([
-            ("product_id", "=", self.discount_product.id),
-            ("order_id", "=", self.sale_single_tax.id)
-        ])
+        discount_order_lines = self.env["sale.order.line"].search(
+            [
+                ("product_id", "=", self.discount_product.id),
+                ("order_id", "=", self.sale_single_tax.id),
+            ]
+        )
         self.assertEqual(len(discount_order_lines), 1)
         self.assertEqual(discount_order_lines[0].is_discount_line, True)
         self.assertEqual(discount_order_lines[0].price_unit, -30.00)
@@ -105,16 +141,20 @@ class TestSaleGlobalDiscountAmount(SavepointCase):
         self.assertEqual(self.sale_multi_tax.amount_tax, 42.85)
         self.assertEqual(self.sale_multi_tax.amount_total, 342.85)
         self.assertEqual(self.sale_multi_tax.global_discount_ok, True)
-        discount_order_lines = self.env["sale.order.line"].search([
-            ("product_id", "=", self.discount_product.id),
-            ("order_id", "=", self.sale_multi_tax.id)
-        ])
+        discount_order_lines = self.env["sale.order.line"].search(
+            [
+                ("product_id", "=", self.discount_product.id),
+                ("order_id", "=", self.sale_multi_tax.id),
+            ]
+        )
         self.assertEqual(len(discount_order_lines), 2)
         discount_line_10 = discount_order_lines.filtered(
-            lambda x: x.tax_id == self.vat10)
+            lambda x: x.tax_id == self.vat10
+        )
         self.assertEqual(discount_line_10.price_unit, -28.57)
         discount_line_20 = discount_order_lines.filtered(
-            lambda x: x.tax_id == self.vat20)
+            lambda x: x.tax_id == self.vat20
+        )
         self.assertEqual(discount_line_20.price_unit, -21.43)
 
     def test_write_sale_single_tax_with_change_global_discount(self):
@@ -122,10 +162,12 @@ class TestSaleGlobalDiscountAmount(SavepointCase):
         self.assertEqual(self.sale_single_tax.amount_total, 192.50)
         self.assertEqual(self.sale_single_tax.amount_tax, 17.50)
         self.assertEqual(self.sale_single_tax.global_discount_ok, True)
-        discount_order_lines = self.env["sale.order.line"].search([
-            ("product_id", "=", self.discount_product.id),
-            ("order_id", "=", self.sale_single_tax.id)
-        ])
+        discount_order_lines = self.env["sale.order.line"].search(
+            [
+                ("product_id", "=", self.discount_product.id),
+                ("order_id", "=", self.sale_single_tax.id),
+            ]
+        )
         self.assertEqual(len(discount_order_lines), 1)
         self.assertEqual(discount_order_lines[0].is_discount_line, True)
         self.assertEqual(discount_order_lines[0].price_unit, -25.00)
@@ -136,16 +178,20 @@ class TestSaleGlobalDiscountAmount(SavepointCase):
         self.assertEqual(self.sale_multi_tax.amount_tax, 43.57)
         self.assertEqual(self.sale_multi_tax.amount_total, 348.57)
         self.assertEqual(self.sale_multi_tax.global_discount_ok, True)
-        discount_order_lines = self.env["sale.order.line"].search([
-            ("product_id", "=", self.discount_product.id),
-            ("order_id", "=", self.sale_multi_tax.id)
-        ])
+        discount_order_lines = self.env["sale.order.line"].search(
+            [
+                ("product_id", "=", self.discount_product.id),
+                ("order_id", "=", self.sale_multi_tax.id),
+            ]
+        )
         self.assertEqual(len(discount_order_lines), 2)
         discount_line_10 = discount_order_lines.filtered(
-            lambda x: x.tax_id == self.vat10)
+            lambda x: x.tax_id == self.vat10
+        )
         self.assertEqual(discount_line_10.price_unit, -25.71)
         discount_line_20 = discount_order_lines.filtered(
-            lambda x: x.tax_id == self.vat20)
+            lambda x: x.tax_id == self.vat20
+        )
         self.assertEqual(discount_line_20.price_unit, -19.29)
 
     def test_write_sale_single_tax_with_null_global_discount(self):
@@ -153,10 +199,12 @@ class TestSaleGlobalDiscountAmount(SavepointCase):
         self.assertEqual(self.sale_single_tax.amount_total, 220.00)
         self.assertEqual(self.sale_single_tax.amount_tax, 20.00)
         self.assertEqual(self.sale_single_tax.global_discount_ok, True)
-        discount_order_lines = self.env["sale.order.line"].search([
-            ("product_id", "=", self.discount_product.id),
-            ("order_id", "=", self.sale_single_tax.id)
-        ])
+        discount_order_lines = self.env["sale.order.line"].search(
+            [
+                ("product_id", "=", self.discount_product.id),
+                ("order_id", "=", self.sale_single_tax.id),
+            ]
+        )
         self.assertEqual(len(discount_order_lines), 0)
 
     def test_write_sale_multi_tax_with_null_global_discount(self):
@@ -165,8 +213,10 @@ class TestSaleGlobalDiscountAmount(SavepointCase):
         self.assertEqual(self.sale_multi_tax.amount_tax, 50.00)
         self.assertEqual(self.sale_multi_tax.amount_total, 400.00)
         self.assertEqual(self.sale_multi_tax.global_discount_ok, True)
-        discount_order_lines = self.env["sale.order.line"].search([
-            ("product_id", "=", self.discount_product.id),
-            ("order_id", "=", self.sale_multi_tax.id)
-        ])
+        discount_order_lines = self.env["sale.order.line"].search(
+            [
+                ("product_id", "=", self.discount_product.id),
+                ("order_id", "=", self.sale_multi_tax.id),
+            ]
+        )
         self.assertEqual(len(discount_order_lines), 0)
