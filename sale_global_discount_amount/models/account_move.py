@@ -13,14 +13,15 @@ class AccountMove(models.Model):
 
     @api.model_create_multi
     def create(self, vals):
-        for line_val in vals[0].get("invoice_line_ids", False):
-            if line_val[2].get("is_discount_line", False) and line_val[2].get(
-                "sale_line_ids", False
-            ):
-                # for not create new discount lines
-                self = self.with_context(discount_lines_from_sale=True)
-                vals[0]["global_discount_amount_readonly"] = True
-                break
+        if vals:
+            for line_val in vals[0].get("invoice_line_ids", False):
+                if line_val[2].get("is_discount_line", False) and line_val[2].get(
+                    "sale_line_ids", False
+                ):
+                    # for not create new discount lines
+                    self = self.with_context(discount_lines_from_sale=True)
+                    vals[0]["global_discount_amount_readonly"] = True
+                    break
         move = super(AccountMove, self).create(vals)
         return move
 
