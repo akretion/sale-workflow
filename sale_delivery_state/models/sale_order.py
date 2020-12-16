@@ -69,9 +69,7 @@ class SaleOrder(models.Model):
             for line in sale_lines
         )
 
-    @api.depends(
-        "order_line", "order_line.qty_delivered", "state", "force_delivery_state"
-    )
+    @api.depends("order_line.qty_delivered", "state", "force_delivery_state")
     def _compute_delivery_state(self):
         for order in self:
             if order.state in ("draft", "cancel"):
