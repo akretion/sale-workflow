@@ -18,7 +18,10 @@ class SaleOrder(models.Model):
             ("done", "Done"),
         ],
         string="Delivery state",
-        compute="_compute_delivery_state",
+        # Compute method have a different name then the field because
+        # the method _compute_delivery_state already exist to compute
+        # the field delivery_set
+        compute="_compute_sale_delivery_state",
         store=True,
     )
 
@@ -70,7 +73,7 @@ class SaleOrder(models.Model):
         )
 
     @api.depends("order_line.qty_delivered", "state", "force_delivery_state")
-    def _compute_delivery_state(self):
+    def _compute_sale_delivery_state(self):
         for order in self:
             if order.state in ("draft", "cancel"):
                 order.delivery_state = "no"
