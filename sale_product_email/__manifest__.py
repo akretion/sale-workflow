@@ -9,12 +9,10 @@
     'license': "AGPL-3",
     'website': "https://github.com/OCA/sale-workflow",
     'data': [
-        'data/sale_order_actions.xml',
         'views/product_template.xml',
     ],
     'depends': [
         'sale',
-        'base_automation',
     ],
     'installable': True,
 }
