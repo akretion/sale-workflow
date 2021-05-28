@@ -14,6 +14,7 @@ class AccountBankStatementLine(models.Model):
         if new_aml_dicts and self.sale_id:
             for aml_dict in new_aml_dicts:
                 aml_dict["sale_id"] = self.sale_id.id
+                aml_dict["name"] = self.sale_id.name
         return super().process_reconciliation(
             counterpart_aml_dicts=counterpart_aml_dicts,
             payment_aml_rec=payment_aml_rec,
