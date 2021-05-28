@@ -80,3 +80,9 @@ class SaleOrder(models.Model):
                 sale.amount_total - down_payment,
                 precision_rounding=sale.currency_id.rounding,
             )
+
+    def _prepare_invoice(self):
+        vals = super()._prepare_invoice()
+        if not vals.get("payment_reference"):
+            vals["payment_reference"] = self.name
+        return vals

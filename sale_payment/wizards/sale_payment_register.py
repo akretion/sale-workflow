@@ -28,7 +28,7 @@ class SalePaymentRegister(models.TransientModel):
             res["currency_id"] = (sale.currency_id.id,)
             res["amount"] = sale.amount_residual
             res["communication"] = sale.name
-            res["payment_reference"] = sale.reference
+            res["payment_reference"] = sale.reference or sale.name
             res["partner_id"] = (sale.partner_id.id,)
         return res
 
@@ -37,9 +37,6 @@ class SalePaymentRegister(models.TransientModel):
             "payment_type": "inbound",
             "partner_type": "customer",
             "partner_id": self.partner_id.id,
-            "destination_account_id": self.partner_id.with_company(
-                self.sale_id.company_id
-            ).property_account_receivable_id.id,
             "company_id": self.sale_id.company_id.id,
             "amount": self.amount,
             "currency_id": self.currency_id.id,
@@ -55,3 +52,9 @@ class SalePaymentRegister(models.TransientModel):
         vals = self._get_payment_vals()
         payment = self.env["account.payment"].create(vals)
         payment.action_post()
+
+        # if a reference is added on the paymment (by default, sale order name)
+        # but payment_reference is not set on sale order, fill it, it could help
+        # future reconcilition
+        if self.payment_reference and not self.sale_id.reference:
+            self.sale_id.write({"reference": self.payment_reference})
