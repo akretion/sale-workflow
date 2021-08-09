@@ -56,7 +56,7 @@ class SaleOrderLine(models.Model):
     @api.depends("secondary_uom_qty", "product_uom_qty", "price_unit")
     def _compute_secondary_uom_unit_price(self):
         for line in self:
-            if line.secondary_uom_id:
+            if line.secondary_uom_id and line.secondary_uom_qty:
                 line.secondary_uom_unit_price = (
                     line.price_subtotal / line.secondary_uom_qty
                 )
