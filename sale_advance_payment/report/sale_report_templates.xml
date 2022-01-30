@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document"
+              inherit_id="report_sale_installer.report_saleorder_document">
+
+        <!-- Mimic "Paid on" lines on invoice report-->
+        <xpath expr="//span[@t-field='doc.amount_total']/../.." position="after">
+            <t t-set="advance_payment_ids" t-value="doc.account_payment_ids.filtered(lambda p: p.state == 'posted')" />
+            <t t-foreach="advance_payment_ids" t-as="pay_id">
+                <tr>
+                    <td>
+                        <i class="oe_form_field text-right oe_payment_label">Paid on <t t-esc="pay_id.date" t-options='{"widget": "date"}'/></i>
+                    </td>
+                    <td class="text-right">
+                        <span t-esc="pay_id.amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                    </td>
+                </tr>
+            </t>
+            <t t-if="len(advance_payment_ids) > 0">
+                <tr class="border-black">
+                    <td><strong>Amount Due</strong></td>
+                    <td class="text-right">
+                        <span t-field="doc.left_to_pay"/>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+
+    </template>
+</odoo>
