@@ -12,7 +12,7 @@ class SaleOrder(models.Model):
     account_payment_ids = fields.One2many(
         "account.payment",
         "sale_id",
-        string="Pay sale advanced",
+        string="Advance payments",
         compute="_compute_account_payment_ids",
         inverse="_inverse_account_payment_ids",
         store=True,

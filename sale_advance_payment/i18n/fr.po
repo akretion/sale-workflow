@@ -17,6 +17,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: sale_advance_payment
+#: model_terms:ir.ui.view,arch_db:sale_advance_payment.report_saleorder_document
+msgid "<strong>Amount Due</strong>"
+msgstr "<strong>Montant dû</strong>"
+
+#. module: sale_advance_payment
 #: model:ir.model,name:sale_advance_payment.model_account_voucher_wizard
 msgid "Account Voucher Wizard"
 msgstr "Assistant de Configuration Paiement d'Avance"
@@ -31,6 +36,12 @@ msgstr "Paiement en avance"
 #: model:ir.model.fields,field_description:sale_advance_payment.field_account_voucher_wizard__percent_advance
 msgid "Advance Percentage"
 msgstr "Pourcentage"
+
+#. module: sale_advance_payment
+#: model:ir.model.fields,field_description:sale_advance_payment.field_sale_order__account_payment_ids
+#, fuzzy
+msgid "Advance payments"
+msgstr "Paiements en avance"
 
 #. module: sale_advance_payment
 #: model_terms:ir.ui.view,arch_db:sale_advance_payment.view_sale_advance_payment_tree
@@ -206,14 +217,15 @@ msgid "Paid"
 msgstr "Payé"
 
 #. module: sale_advance_payment
+#: model_terms:ir.ui.view,arch_db:sale_advance_payment.report_saleorder_document
+#, fuzzy
+msgid "Paid on"
+msgstr "Payé le"
+
+#. module: sale_advance_payment
 #: model:ir.model.fields.selection,name:sale_advance_payment.selection__sale_order__payment_status__partial
 msgid "Partially Paid"
 msgstr "Partiellement Payé"
-
-#. module: sale_advance_payment
-#: model:ir.model.fields,field_description:sale_advance_payment.field_sale_order__account_payment_ids
-msgid "Pay sale advanced"
-msgstr "Enregistrer un paiement en avance"
 
 #. module: sale_advance_payment
 #: model_terms:ir.ui.view,arch_db:sale_advance_payment.view_account_voucher_wizard
