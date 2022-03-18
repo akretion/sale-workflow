@@ -29,6 +29,9 @@
                         colspan="4"
                         context="{'form_view_ref': 'sale_advance_payment.view_account_payment_form_no_header','tree_view_ref': 'sale_advance_payment.view_sale_advance_payment_tree'}"
                     />
+                    <div class="o_row oe_inline" groups="sales_team.group_sale_manager">
+                        <field name="keep_unposted_payments" widget="boolean_toggle" /><span>Keep unposted payments</span>
+                    </div>
                     <group class="oe_subtotal_footer oe_right">
                         <field
                             name="left_to_alloc"

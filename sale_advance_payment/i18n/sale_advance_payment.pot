@@ -14,6 +14,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: sale_advance_payment
+#: model_terms:ir.ui.view,arch_db:sale_advance_payment.view_order_form
+msgid "<span>Keep unposted payments</span>"
+msgstr ""
+
+#. module: sale_advance_payment
 #: model_terms:ir.ui.view,arch_db:sale_advance_payment.report_saleorder_document
 msgid "<strong>Amount Due</strong>"
 msgstr ""
@@ -137,6 +142,13 @@ msgid "ID"
 msgstr ""
 
 #. module: sale_advance_payment
+#: model:ir.model.fields,help:sale_advance_payment.field_sale_order__keep_unposted_payments
+msgid ""
+"If checked, the unposted payments won't be deleted when creating invoice "
+"from Sale Order"
+msgstr ""
+
+#. module: sale_advance_payment
 #: model_terms:ir.ui.view,arch_db:sale_advance_payment.view_order_form
 msgid "Incoming Payments"
 msgstr ""
@@ -154,6 +166,11 @@ msgstr ""
 #. module: sale_advance_payment
 #: model:ir.model.fields,field_description:sale_advance_payment.field_account_voucher_wizard__journal_currency_id
 msgid "Journal Currency"
+msgstr ""
+
+#. module: sale_advance_payment
+#: model:ir.model.fields,field_description:sale_advance_payment.field_sale_order__keep_unposted_payments
+msgid "Keep unposted payments"
 msgstr ""
 
 #. module: sale_advance_payment

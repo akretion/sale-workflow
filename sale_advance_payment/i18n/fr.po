@@ -17,6 +17,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: sale_advance_payment
+#: model_terms:ir.ui.view,arch_db:sale_advance_payment.view_order_form
+msgid "<span>Keep unposted payments</span>"
+msgstr "<span>Garder les paiements en brouillon</span>"
+
+#. module: sale_advance_payment
 #: model_terms:ir.ui.view,arch_db:sale_advance_payment.report_saleorder_document
 msgid "<strong>Amount Due</strong>"
 msgstr "<strong>Montant dû</strong>"
@@ -143,6 +148,15 @@ msgid "ID"
 msgstr ""
 
 #. module: sale_advance_payment
+#: model:ir.model.fields,help:sale_advance_payment.field_sale_order__keep_unposted_payments
+msgid ""
+"If checked, the unposted payments won't be deleted when creating invoice "
+"from Sale Order"
+msgstr ""
+"Si coché, les paiements en brouillon ne seront pas supprimés lors de la création d'une "
+"facture depuis l'AR de Commande"
+
+#. module: sale_advance_payment
 #: model_terms:ir.ui.view,arch_db:sale_advance_payment.view_order_form
 msgid "Incoming Payments"
 msgstr "Encaissements"
@@ -161,6 +175,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:sale_advance_payment.field_account_voucher_wizard__journal_currency_id
 msgid "Journal Currency"
 msgstr "Devise du Journal"
+
+#. module: sale_advance_payment
+#: model:ir.model.fields,field_description:sale_advance_payment.field_sale_order__keep_unposted_payments
+msgid "Keep unposted payments"
+msgstr "Garder les paiements en brouillon"
 
 #. module: sale_advance_payment
 #: model:ir.model.fields,field_description:sale_advance_payment.field_account_payment____last_update
