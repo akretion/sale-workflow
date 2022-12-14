@@ -26,11 +26,11 @@ class TestSalePayment(TransactionCase):
         payment = self.sale.payment_line_ids
         self.assertEqual(len(payment), 1)
         self.assertEqual(payment.amount_currency, -1000)
-        self.assertEqual(self.sale.amount_residual, 8705)
+        self.assertEqual(self.sale.amount_residual, 740)
         wizard = (
             self.env["sale.payment.register"]
             .with_context(active_id=self.sale.id, active_model="sale.order")
-            .create({"journal_id": bank_journal.id, "amount": 8705})
+            .create({"journal_id": bank_journal.id, "amount": 740})
         )
         wizard.action_create_payments()
         self.assertEqual(len(self.sale.payment_line_ids), 2)

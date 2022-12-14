@@ -28,16 +28,6 @@
                     class="oe_highlight"
                 />
                 </button>
-                <field name="amount_total" position="after">
-                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
-                        <label for="amount_down_payment" />
-                    </div>
-                    <field
-                    name="amount_down_payment"
-                    nolabel="1"
-                    class="oe_subtotal_footer_separator"
-                />
-                </field>
                 <xpath expr="//page[@name='other_information']" position="after">
                   <page name="payments" string="Payments">
                     <field name="amount_residual" invisible="1" />
