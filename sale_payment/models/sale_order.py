@@ -27,7 +27,7 @@ class SaleOrder(models.Model):
         "sale_id",
         string="Payments Entries",
         domain=[
-            ("account_id.internal_type", "=", "receivable"),
+            ("account_id.account_type", "=", "asset_receivable"),
             ("move_id.state", "!=", "cancel"),
         ],
         copy=False,
