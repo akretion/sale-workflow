@@ -42,7 +42,7 @@
                   <page name="payments" string="Payments">
                     <field name="amount_residual" invisible="1" />
                     <field name="payment_line_ids" nolabel="1">
-                        <tree string="Payment">
+                        <tree>
                             <field name="date" />
                             <field name="journal_id" />
                             <field name="partner_id" />
