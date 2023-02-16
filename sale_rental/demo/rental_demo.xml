@@ -18,7 +18,10 @@
     <field name="uom_id" ref="uom.product_uom_day" />
     <field name="uom_po_id" ref="uom.product_uom_day" />
     <field name="must_have_dates" eval="True" />
-    <field name="rented_product_id" ref="product.consu_delivery_01" />
+    <field
+            name="rented_product_ids"
+            eval="[(6, 0, [ref('product.consu_delivery_01')])]"
+        />
     <!-- The 'stock' module sets it as type = 'product'
          This XMLID is misleading -->
 </record>
@@ -34,7 +37,10 @@
     <field name="uom_id" ref="uom.product_uom_day" />
     <field name="uom_po_id" ref="uom.product_uom_day" />
     <field name="must_have_dates" eval="True" />
-    <field name="rented_product_id" ref="product.product_product_20" />
+    <field
+            name="rented_product_ids"
+            eval="[(6, 0, [ref('product.product_product_20')])]"
+        />
 </record>
 
 <record id="rent_product_product_25" model="product.product">
@@ -48,7 +54,10 @@
     <field name="uom_id" ref="uom.product_uom_day" />
     <field name="uom_po_id" ref="uom.product_uom_day" />
     <field name="must_have_dates" eval="True" />
-    <field name="rented_product_id" ref="product.product_product_25" />
+    <field
+            name="rented_product_ids"
+            eval="[(6, 0, [ref('product.product_product_25')])]"
+        />
 </record>
 
 <!-- Create inventory on Rental In for these products -->
