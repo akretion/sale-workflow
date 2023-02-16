@@ -42,8 +42,8 @@ class CreateRentalProduct(models.TransientModel):
     )
     name = fields.Char(string="Rental Service Name", required=True)
     default_code = fields.Char(string="Default Code")
-    sale_price_per_day = fields.Float(
-        string="Rental Price per Day",
+    sale_price = fields.Float(
+        string="Rental Price",
         required=True,
         digits="Product Price",
         default=1.0,
@@ -52,20 +52,29 @@ class CreateRentalProduct(models.TransientModel):
         "product.category", string="Product Category", required=True
     )
     copy_image = fields.Boolean(string="Copy Product Image")
+    uom_id = fields.Many2one(
+        comodel_name="uom.uom",
+        string="Unit of Measure",
+        required=True,
+        default=lambda self: self.env.ref("uom.product_uom_day").id,
+        domain=lambda self: [
+            ("category_id", "=", self.env.ref("uom.uom_categ_wtime").id)
+        ],
+    )
 
     @api.model
     def _prepare_rental_product(self):
-        day_uom_id = self.env.ref("uom.product_uom_day").id
+        uom_id = self.uom_id.id
         vals = {
             "type": "service",
             "sale_ok": True,
             "purchase_ok": False,
-            "uom_id": day_uom_id,
-            "uom_po_id": day_uom_id,
-            "list_price": self.sale_price_per_day,
+            "uom_id": uom_id,
+            "uom_po_id": uom_id,
+            "list_price": self.sale_price,
             "name": self.name,
             "default_code": self.default_code,
-            "rented_product_id": self.hw_product_id.id,
+            "rented_product_ids": [(6, 0, [self.hw_product_id.id])],
             "must_have_dates": True,
             "categ_id": self.categ_id.id,
             "invoice_policy": "order",

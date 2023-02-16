@@ -33,6 +33,11 @@
                     attrs="{'invisible': [('can_sell_rental', '=', False)]}"
                     domain="[('rented_product_id', '=', product_id), ('state', '=', 'out'), ('company_id', '=', company_id)]"
                 />
+            <field
+                    name="rented_product_id"
+                    attrs="{'invisible': [('rental', '=', False)]}"
+                    domain="[('rental_service_ids', 'in', [product_id])]"
+                />
             <field name="rental" invisible="1" />
             <field name="can_sell_rental" invisible="1" />
         </xpath>
