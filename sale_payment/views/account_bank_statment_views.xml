@@ -2,16 +2,19 @@
 <odoo>
 
         <record id="view_bank_statement_form" model="ir.ui.view">
-            <field name="model">account.bank.statement</field>
-            <field name="inherit_id" ref="account.view_bank_statement_form" />
+            <field name="model">account.bank.statement.line</field>
+            <field
+            name="inherit_id"
+            ref="account_reconcile_oca.bank_statement_line_form_reconcile_view"
+        />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='amount']" position="after">
+                <field name="manual_partner_id" position="after">
                     <field
-                    name="sale_id"
+                    name="manual_sale_id"
+                    attrs="{'readonly': ['|', '|',('manual_reference', '=', False), ('is_reconciled', '=', True), ('manual_line_id', '!=', False)]}"
                     options="{'no_create': True}"
-                    optional="show"
                 />
-                </xpath>
+                </field>
             </field>
         </record>
 
