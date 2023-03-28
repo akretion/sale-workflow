@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_saleorder_document"
-              inherit_id="report_sale_installer.report_saleorder_document">
+              inherit_id="sale.report_saleorder_document">
 
         <!-- Mimic "Paid on" lines on invoice report-->
         <xpath expr="//span[@t-field='doc.amount_total']/../.." position="after">
