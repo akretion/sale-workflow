@@ -244,7 +244,7 @@ class SaleOrderLine(models.Model):
 
             elif (
                 line.rental_type == "rental_extension"
-                and line.product_id.rented_product_id
+                and line.product_id.rented_product_ids
                 and line.extension_rental_id
                 and line.extension_rental_id.in_move_id
             ):
