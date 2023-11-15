@@ -77,12 +77,18 @@ class ProductTemplate(models.Model):
     rental_service_tmpl_ids = fields.Many2many(
         "product.template",
         relation="rental_product_tmpl_rel",
-        column1="rental_product_tmpl_id",
-        column2="rented_product_tmpl_id",
+        column1="rented_product_tmpl_id",
+        column2="rental_product_tmpl_id",
         string="Rental Services",
+        compute="_compute_rented_product_tmpl_ids",
+        store=True,
     )
 
-    @api.depends("product_variant_ids", "product_variant_ids.rented_product_ids")
+    @api.depends(
+        "product_variant_ids",
+        "product_variant_ids.rented_product_ids",
+        "product_variant_ids.rental_service_ids",
+    )
     def _compute_rented_product_tmpl_ids(self):
         unique_variants = self.filtered(
             lambda template: len(template.product_variant_ids) == 1
@@ -91,12 +97,17 @@ class ProductTemplate(models.Model):
             template.rented_product_tmpl_ids = (
                 template.product_variant_ids.rented_product_ids.product_tmpl_id.ids
             )
+            template.rental_service_tmpl_ids = (
+                template.product_variant_ids.rental_service_ids.product_tmpl_id.ids
+            )
+
         for template in self - unique_variants:
             template.rented_product_tmpl_ids = False
+            template.rental_service_tmpl_ids = False
 
     def _inverse_rented_product_tmpl_ids(self):
         for template in self:
             if len(template.product_variant_ids) == 1:
                 template.product_variant_ids.rented_product_ids = (
-                    template.rented_product_tmpl_ids.product_variant_ids[0].ids
+                    template.rented_product_tmpl_ids.product_variant_ids.ids
                 )
