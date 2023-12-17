@@ -16,22 +16,23 @@ class TestSaleRental(TransactionCase):
         # Rent a product
         so_form = Form(self.env["sale.order"])
         so_form.partner_id = self.test_partner
-        line_vals = {
-            "product_id": self.test_rental_prod.id,
-            "start_date": "2022-01-01",
-            "end_date": "2022-01-10",
-            "rental_qty": 1,
-        }
+        # line_vals = {
+        #     "product_id": self.test_rental_prod.id,
+        #     "start_date": "2022-01-01",
+        #     "end_date": "2022-01-10",
+        #     "rental_qty": 1,
+        # }
 
-        # with so_form.order_line.new() as line:
-        #     line.product_id = self.test_rental_prod
-        # line.start_date = "2022-01-01"
-        # line.end_date = "2022-01-10"
-        # line.rental_qty = 1
+        with so_form.order_line.new() as line:
+            line.product_id = self.test_rental_prod
+            line.start_date = "2022-01-01"
+            line.end_date = "2022-01-10"
+            line.rental_qty = 1
+            line.product_uom_qty = 10
         so = so_form.save()
-        so.write({"order_line": [(0, 0, line_vals)]})
+        # so.write({"order_line": [(0, 0, line_vals)]})
         sol = so.order_line
-        self.assertEqual(sol.price_subtotal, 60)
+        self.assertEqual(sol.price_subtotal, 600)
         so.action_confirm()
         self.assertEqual(len(so.picking_ids), 2)
         rental_out_pick = so.picking_ids.filtered(
@@ -55,15 +56,15 @@ class TestSaleRental(TransactionCase):
             line.product_uom_qty = 1
             line.sell_rental_id = rental
         so = so_form.save()
-        line_vals = {
-            "product_id": self.test_rental_prod.rented_product_id.id,
-            "name": "Test",
-            "display_type": False,
-            "product_uom": self.env.ref("uom.product_uom_day").id,
-            "product_uom_qty": 1,
-            "sell_rental_id": rental,
-        }
-        so.write({"order_line": [(0, 0, line_vals)]})
+        # line_vals = {
+        #     "product_id": self.test_rental_prod.rented_product_id.id,
+        #     "name": "Test",
+        #     "display_type": False,
+        #     "product_uom": self.env.ref("uom.product_uom_day").id,
+        #     "product_uom_qty": 1,
+        #     "sell_rental_id": rental,
+        # }
+        # so.write({"order_line": [(0, 0, line_vals)]})
         sol = so.order_line
         # Raises an error because rented product is not sent yet
         with self.assertRaises(UserError):
