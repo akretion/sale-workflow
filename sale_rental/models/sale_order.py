@@ -202,7 +202,9 @@ class SaleOrderLine(models.Model):
                 except UserError as error:
                     errors.append(error.name)
 
-                rental_existing = self.env["sale.rental"].search([("start_order_line_id", "=", self.id)], limit=1)
+                rental_existing = self.env["sale.rental"].search(
+                    [("start_order_line_id", "=", line.id)], limit=1
+                )
                 if not rental_existing:
                     self.env["sale.rental"].create(line._prepare_rental())
 
