@@ -39,7 +39,7 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    rental = fields.Boolean(default=False)
+    rental = fields.Boolean(string="Is Rental Line", default=False)
     can_sell_rental = fields.Boolean(string="Can Sell from Rental")
     rental_type = fields.Selection(
         [("new_rental", "New Rental"), ("rental_extension", "Rental Extension")],
@@ -202,7 +202,9 @@ class SaleOrderLine(models.Model):
                 except UserError as error:
                     errors.append(error.name)
 
-                rental_existing = self.env["sale.rental"].search([("start_order_line_id", "=", self.id)], limit=1)
+                rental_existing = self.env["sale.rental"].search(
+                    [("start_order_line_id", "=", line.id)], limit=1
+                )
                 if not rental_existing:
                     self.env["sale.rental"].create(line._prepare_rental())
 
