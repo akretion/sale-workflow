@@ -68,10 +68,10 @@ class SaleOrderLine(models.Model):
             if not line.product_packaging_id:
                 continue
             # Reset to 1 packaging if it's empty or not a whole number
-            if not line.product_packaging_qty or line.product_packaging_qty % 1:
-                line.product_packaging_qty = int(
-                    "product_uom_qty" not in changing_fields
-                )
+            # if not line.product_packaging_qty or line.product_packaging_qty % 1:
+            #     line.product_packaging_qty = int(
+            #         "product_uom_qty" not in changing_fields
+            #     )
         return result
 
     @api.depends(
