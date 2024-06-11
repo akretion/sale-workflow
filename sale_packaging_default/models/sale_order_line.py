@@ -1,6 +1,5 @@
 # Copyright 2023 Moduon Team S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0)
-from contextlib import suppress
 
 from odoo import api, fields, models
 
@@ -25,25 +24,26 @@ class SaleOrderLine(models.Model):
         for line in self:
             if line.product_id != line.product_packaging_id.product_id:
                 line.product_packaging_id = line._get_default_packaging(line.product_id)
-        result = super()._compute_product_packaging_id()
-        # If there's no way to package the desired qty, remove the packaging.
-        # It is only done when the user is currently manually setting
-        # `product_uom_qty` to zero. In other cases, we are maybe getting
-        # default values and this difference will get fixed by other compute
-        # methods later.
-        if (
-            self.env.context.get("changing_fields")
-            and "product_uom_qty" not in self.env.context["changing_fields"]
-        ):
-            return result
-        for line in self:
-            with suppress(ZeroDivisionError):
-                if (
-                    line.product_uom_qty
-                    and line.product_uom_qty % line.product_packaging_id.qty
-                ):
-                    line.product_packaging_id = False
-        return result
+        return super()._compute_product_packaging_id()
+
+    #     # If there's no way to package the desired qty, remove the packaging.
+    #     # It is only done when the user is currently manually setting
+    #     # `product_uom_qty` to zero. In other cases, we are maybe getting
+    #     # default values and this difference will get fixed by other compute
+    #     # methods later.
+    #     if (
+    #         self.env.context.get("changing_fields")
+    #         and "product_uom_qty" not in self.env.context["changing_fields"]
+    #     ):
+    #         return result
+    #     for line in self:
+    #         with suppress(ZeroDivisionError):
+    #             if (
+    #                 line.product_uom_qty
+    #                 and line.product_uom_qty % line.product_packaging_id.qty
+    #             ):
+    #                 line.product_packaging_id = False
+    #     return result
 
     @api.model
     def _get_default_packaging(self, product):
@@ -65,10 +65,10 @@ class SaleOrderLine(models.Model):
             if not line.product_packaging_id:
                 continue
             # Reset to 1 packaging if it's empty or not a whole number
-            if not line.product_packaging_qty or line.product_packaging_qty % 1:
-                line.product_packaging_qty = int(
-                    "product_uom_qty" not in changing_fields
-                )
+            # if not line.product_packaging_qty or line.product_packaging_qty % 1:
+            #     line.product_packaging_qty = int(
+            #         "product_uom_qty" not in changing_fields
+            #     )
         return result
 
     @api.depends(
