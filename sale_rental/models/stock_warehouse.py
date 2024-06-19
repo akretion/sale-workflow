@@ -61,9 +61,23 @@ class StockWarehouse(models.Model):
             sell_rented_product_route = self.env.ref(
                 "sale_rental.route_warehouse0_sell_rented_product"
             )
+            if (
+                sell_rented_product_route
+                and self.company_id != sell_rented_product_route.company_id
+            ):
+                sell_rented_product_route = route_obj.search(
+                    [
+                        ("name", "=", _("Sell Rented Product")),
+                        ("warehouse_ids", "in", [self.id]),
+                    ],
+                    limit=1,
+                )
         except Exception:
             sell_rented_product_routes = route_obj.search(
-                [("name", "=", _("Sell Rented Product"))]
+                [
+                    ("name", "=", _("Sell Rented Product")),
+                    ("warehouse_ids", "in", [self.id]),
+                ],
             )
             sell_rented_product_route = (
                 sell_rented_product_routes and sell_rented_product_routes[0] or False
@@ -205,6 +219,25 @@ class StockWarehouse(models.Model):
             sell_rented_route = self.env.ref(
                 "sale_rental.route_warehouse0_sell_rented_product"
             )
+            if rental_route.sudo().company_id != self.company_id:
+                rental_route = self.env["stock.route"].create(
+                    {
+                        "name": _("Rent"),
+                        "warehouse_ids": [(4, self.id)],
+                        "company_id": self.company_id.id,
+                        "sequence": 100,
+                        "warehouse_selectable": True,
+                        "product_selectable": False,
+                    }
+                )
+                sell_rented_route = self.env["stock.route"].create(
+                    {
+                        "name": _("Sell Rented Product"),
+                        "warehouse_ids": [(4, self.id)],
+                        "company_id": self.company_id.id,
+                        "sequence": 100,
+                    }
+                )
             if vals.get("rental_allowed"):
                 self._create_rental_locations()
                 self.write(
@@ -218,6 +251,7 @@ class StockWarehouse(models.Model):
                     [
                         ("route_id", "in", [rental_route.id, sell_rented_route.id]),
                         ("active", "=", False),
+                        ("company_id", "=", self.company_id.id),
                     ]
                 )
                 if rental_rules:
