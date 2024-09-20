@@ -16,6 +16,7 @@ class AccountMoveLine(models.Model):
         compute="_compute_sale_id",
         store=True,
         readonly=False,
+        index="btree_not_null",
     )
 
     @api.constrains("sale_id", "account_id")
