@@ -13,6 +13,9 @@ class SaleOrder(models.Model):
     warehouse_rule_info = fields.Html(
         readonly=True, compute="_compute_warehouse_rule_message"
     )
+    show_sale_line_warehouse_column = fields.Boolean(
+        related="company_id.show_sale_line_warehouse_column",
+    )
 
     @api.depends("order_line.product_id.variant_warehouse_id", "warehouse_id")
     def _compute_warehouse_rule_message(self):
@@ -62,10 +65,20 @@ class SaleOrder(models.Model):
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    def _prepare_procurement_values(self, group_id=False):
-        values = super()._prepare_procurement_values(group_id=group_id)
+    warehouse_id = fields.Many2one(
+        comodel_name="stock.warehouse",
+        compute="_compute_warehouse_id",
+        related=False,
+        store=True,
+        readonly=False,
+    )
+
+    @api.depends("product_id", "order_id.warehouse_id")
+    def _compute_warehouse_id(self):
         for line in self:
-            variant_warehouse = line.product_id.variant_warehouse_id
-            if variant_warehouse:
-                values["warehouse_id"] = variant_warehouse
-        return values
+            variant_warehouse = line.product_id.variant_warehouse_id.filtered(
+                lambda w: w.company_id == line.order_id.company_id
+            )
+            line.warehouse_id = (
+                variant_warehouse or line.order_id.warehouse_id
+            )
