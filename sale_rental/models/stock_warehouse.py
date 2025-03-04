@@ -52,6 +52,8 @@ class StockWarehouse(models.Model):
         route_obj = self.env["stock.route"]
         try:
             rental_route = self.env.ref("sale_rental.route_warehouse0_rental")
+            if rental_route.sudo().company_id != self.company_id:
+                raise ValueError()
         except Exception:
             rental_routes = route_obj.search([("name", "=", _("Rent"))])
             rental_route = rental_routes and rental_routes[0] or False
