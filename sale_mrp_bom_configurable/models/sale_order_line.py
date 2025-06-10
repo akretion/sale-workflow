@@ -74,7 +74,6 @@ class SaleOrderLine(models.Model):
 
         for rec in self:
             if rec.id in to_change:
-
                 self.env["input.line"].search(
                     [("id", "in", input_line_to_delete)]
                 ).unlink()

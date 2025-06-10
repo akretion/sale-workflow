@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <templates>
-   <t t-name="button_sale.ListView.Buttons" t-inherit="web.ListView.Buttons">
-       <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="after">
-           <button
+    <t t-name="button_sale.ListView.Buttons" t-inherit="web.ListView.Buttons">
+        <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="after">
+            <button
                 type="button"
                 class="btn btn-primary"
                 style="margin-left: 10px;"
@@ -10,6 +10,6 @@
             >
                Price change
            </button>
-       </xpath>
-   </t>
+        </xpath>
+    </t>
 </templates>

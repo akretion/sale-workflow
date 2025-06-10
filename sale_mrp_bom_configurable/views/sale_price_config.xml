@@ -67,8 +67,7 @@
                     string="Active"
                     name="active"
                     domain="[('start_date', '&lt;', context_today()), '|', ('end_date', '&gt;', context_today()), ('end_date', '=', False)]"
-                >
-                </filter>
+                />
             </search>
         </field>
     </record>
