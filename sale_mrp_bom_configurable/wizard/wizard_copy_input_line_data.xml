@@ -6,10 +6,10 @@
         <field name="arch" type="xml">
             <form>
                 <field name="line_ids">
-                    <tree editable="top" create="False" delete="False">
+                    <list editable="top" create="False" delete="False">
                         <field name="field_name" readonly="True" />
                         <field name="should_copy" />
-                    </tree>
+                    </list>
                 </field>
             </form>
         </field>

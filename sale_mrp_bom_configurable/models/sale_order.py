@@ -24,7 +24,7 @@ class SaleOrder(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Lines",
-            "view_mode": "tree",
+            "view_mode": "list",
             "res_model": "sale.order.line",
             "view_id": self.env.ref(
                 "sale_mrp_bom_configurable.sale_order_line_tree_multi_edit"

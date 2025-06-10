@@ -16,14 +16,14 @@
                                 name="show_matrix_input"
                                 type="object"
                                 string="Afficher champ matrice"
-                                attrs="{'invisible': [('should_show_matrix_input', '=', True)]}"
+                                invisible="should_show_matrix_input == True"
                                 colspan="2"
                             />
                             <button
                                 name="hide_matrix_input"
                                 type="object"
                                 string="Afficher tableau matrice"
-                                attrs="{'invisible': [('should_show_matrix_input', '=', False)]}"
+                                invisible="should_show_matrix_input == False"
                                 colspan="2"
                             />
                         </group>
@@ -36,11 +36,11 @@
                         <field
                             name="matrix"
                             widget="matrix_table"
-                            attrs="{'invisible': [('should_show_matrix_input', '=', True)]}"
+                            invisible="should_show_matrix_input == True"
                         />
                         <field
                             name="matrix"
-                            attrs="{'invisible': [('should_show_matrix_input', '=', False)]}"
+                            invisible="should_show_matrix_input == False"
                         />
                     </group>
                 </sheet>

@@ -17,7 +17,7 @@
                 </button>
             </div>
             <xpath
-                expr="//page[@name='order_lines']//tree/field[@name='product_template_id']"
+                expr="//page[@name='order_lines']//list/field[@name='product_template_id']"
                 position="after"
             >
                 <button
