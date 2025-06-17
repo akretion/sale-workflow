@@ -42,44 +42,50 @@ class SaleRental(models.Model):
     )
     def _compute_move_and_state(self):
         for rental in self:
-            in_move = False
-            out_move = False
-            sell_move = False
-            state = False
-            if rental.start_order_line_id:
-                for move in rental.start_order_line_id.move_ids:
-                    if move.state != "cancel" and move.picking_code == "outgoing":
-                        out_move = move
-                    if move.move_dest_ids:
-                        out_move = move
-                        in_move = move.move_dest_ids[0]
-                if (
-                    rental.sell_order_line_ids
-                    and rental.sell_order_line_ids[0].move_ids
-                ):
-                    sell_move = rental.sell_order_line_ids[0].move_ids[-1]
-                state = "ordered"
-                if out_move and out_move.state == "done":
+            rental._set_moves_in_and_out()
+            rental._set_move_sell()
+            rental._set_state()
+
+    def _set_state(self):
+        self.ensure_one()
+        state = "ordered"
+        if self.out_move_id and self.out_move_id.state == "done":
+            state = "out"
+            if self.in_move_id:
+                if self.in_move_id.state == "done":
+                    state = "in"
+                elif self.in_move_id.state == "cancel" and self.sell_move_id:
+                    state = "sell_progress"
+                    if self.sell_move_id.state == "done":
+                        state = "sold"
+            elif self.sell_move_id:
+                state = "sell_progress"
+                if self.sell_move_id.state == "done":
+                    state = "sold"
+                elif self.sell_move_id.state == "cancel":
                     state = "out"
-                    if in_move:
-                        if in_move.state == "done":
-                            state = "in"
-                        elif in_move.state == "cancel" and sell_move:
-                            state = "sell_progress"
-                            if sell_move.state == "done":
-                                state = "sold"
-                    elif sell_move:
-                        state = "sell_progress"
-                        if sell_move.state == "done":
-                            state = "sold"
-                        elif sell_move.state == "cancel":
-                            state = "out"
-                if rental.start_order_line_id.state == "cancel":
-                    state = "cancel"
-            rental.in_move_id = in_move
-            rental.out_move_id = out_move
-            rental.state = state
-            rental.sell_move_id = sell_move
+        if self.start_order_line_id.state == "cancel":
+            state = "cancel"
+        self.state = state
+
+    def _set_moves_in_and_out(self):
+        self.ensure_one()
+        self.out_move_id = self.env["stock.move"]
+        self.in_move_id = self.env["stock.move"]
+        if self.start_order_line_id:
+            for move in self.start_order_line_id.move_ids:
+                if move.state != "cancel" and move.picking_code == "outgoing":
+                    self.out_move_id = move
+                if move.move_dest_ids:
+                    self.out_move_id = move
+                    self.in_move_id = move.move_dest_ids[0]
+
+    def _set_move_sell(self):
+        self.ensure_one()
+        sell_move = self.env["stock.move"]
+        if self.sell_order_line_ids and self.sell_order_line_ids[0].move_ids:
+            sell_move = self.sell_order_line_ids[0].move_ids[-1]
+        self.sell_move_id = sell_move
 
     @api.depends(
         "extension_order_line_ids.end_date",
