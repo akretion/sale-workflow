@@ -17,22 +17,23 @@ function parseMatrix(matrix) {
 }
 
 export class MatrixTableField extends Component {
+    static template =  "sale_mrp_bom_configurable.matrix";
+    static props = {...standardFieldProps};
+    static supportedTypes = ["text"]
     setup() {
-        const {header, lines} = parseMatrix(this.props.value);
+        const {header, lines} = parseMatrix(this.props.record.data[this.props.name]);
         this.headerElements = header;
         this.lines = lines;
         useEffect(() => {
-            const {header_eff, lines_eff} = parseMatrix(this.props.value);
+            const {header_eff, lines_eff} = parseMatrix(this.props.record.data[this.props.name]);
             this.headerElements = header_eff;
             this.lines = lines_eff;
         });
     }
 }
 
-MatrixTableField.template = "sale_mrp_bom_configurable.matrix";
-MatrixTableField.props = {
-    ...standardFieldProps,
-};
-MatrixTableField.supportedTypes = ["text"];
+export const matrixTableField = {
+    component: MatrixTableField,
+}
 
-registry.category("fields").add("matrix_table", MatrixTableField);
+registry.category("fields").add("matrix_table", matrixTableField);

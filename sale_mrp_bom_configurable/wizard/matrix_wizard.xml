@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="matrix_wizard_form" model="ir.ui.view">
         <field name="model">wizard.price.config.matrix</field>
@@ -16,14 +16,14 @@
                                 name="show_matrix_input"
                                 type="object"
                                 string="Afficher champ matrice"
-                                invisible="should_show_matrix_input == True"
+                                invisible="should_show_matrix_input"
                                 colspan="2"
                             />
                             <button
                                 name="hide_matrix_input"
                                 type="object"
                                 string="Afficher tableau matrice"
-                                invisible="should_show_matrix_input == False"
+                                invisible="not should_show_matrix_input"
                                 colspan="2"
                             />
                         </group>
@@ -36,11 +36,11 @@
                         <field
                             name="matrix"
                             widget="matrix_table"
-                            invisible="should_show_matrix_input == True"
+                            invisible="should_show_matrix_input"
                         />
                         <field
                             name="matrix"
-                            invisible="should_show_matrix_input == False"
+                            invisible="not should_show_matrix_input"
                         />
                     </group>
                 </sheet>
