@@ -23,5 +23,10 @@
         "wizard/wizard_copy_input_line_data.xml",
         "security/ir.model.access.csv",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "sale_mrp_bom_configurable/static/src/css/sale_order_line_tree_view.scss",
+        ],
+    },
     "installable": True,
 }
