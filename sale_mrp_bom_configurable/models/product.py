@@ -4,7 +4,7 @@ from odoo import models
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
-    def price_compute(
+    def _price_compute(
         self, price_type, uom=None, currency=None, company=None, date=False
     ):
         price_config = self.env.context.get("price_config")
@@ -17,4 +17,5 @@ class ProductProduct(models.Model):
                 prices[product.id] = price_config._get_price(input_line)
             return prices
 
-        return super().price_compute(price_type, uom, currency, company, date)
+        # TODO(franz): needs to find input_line on pricelist recompute
+        return super()._price_compute(price_type, uom, currency, company, date)
