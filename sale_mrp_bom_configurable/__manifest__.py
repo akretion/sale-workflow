@@ -20,20 +20,8 @@
     "data": [
         "views/sale_order.xml",
         "views/sale_order_line.xml",
-        "views/sale_price_config.xml",
-        "wizard/matrix_wizard.xml",
         "wizard/wizard_copy_input_line_data.xml",
-        "wizard/wizard_sale_price_change.xml",
         "security/ir.model.access.csv",
     ],
-    "assets": {
-        "web.assets_backend": [
-            "sale_mrp_bom_configurable/static/src/xml/matrix_table.xml",
-            "sale_mrp_bom_configurable/static/src/js/matrix_table.esm.js",
-            "sale_mrp_bom_configurable/static/src/xml/sale_price_config_change_button.xml",
-            "sale_mrp_bom_configurable/static/src/js/sale_price_config_change_button.esm.js",
-            "sale_mrp_bom_configurable/static/src/css/matrix_table.scss",
-        ],
-    },
     "installable": True,
 }
