@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="sale_price_config_form_view" model="ir.ui.view">
         <field name="model">sale.price.config</field>
@@ -26,7 +26,6 @@
                                         type="object"
                                         title="Info"
                                         invisible="line_type != 'matrix'"
-
                                     />
                                     <field
                                         name="domain"
@@ -42,12 +41,11 @@
                                         domain="target_field_domain"
                                         invisible="line_type != 'factor'"
                                         required="line_type == 'factor'"
-
                                     />
                                     <field
                                         name="amount"
-                                        invisible="line_type != 'include_product_or_category'"
-                                        required="line_type == 'include_product_or_category'"
+                                        invisible="line_type == 'include_product_or_category'"
+                                        required="line_type != 'include_product_or_category'"
                                         digits="[12,4]"
                                     />
                                     <field
@@ -126,7 +124,8 @@
         <field name="search_view_id" ref="price_config_filter" />
         <field
             name="context"
-        >{'default_company_id': allowed_company_ids[0], 'search_default_active': True}</field>
+        >{'default_company_id': allowed_company_ids[0], 'search_default_active':
+            True}</field>
     </record>
     <menuitem
         id="menu_sale_price_config"
