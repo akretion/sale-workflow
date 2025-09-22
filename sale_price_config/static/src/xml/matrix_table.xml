@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
     <t t-name="sale_mrp_bom_configurable.matrix" owl="1">
         <table class="matrix-table" t-if="lines">
             <tr>
-                <th t-foreach="headerElements" t-as="element" t-key="element">
+                <th t-foreach="headerElements" t-as="element" t-key="element_index">
                     <t t-esc="element" />
                 </th>
             </tr>
-            <tr t-foreach="lines" t-as="line" t-key="line">
+            <tr t-foreach="lines" t-as="line" t-key="line_index">
                 <td t-foreach="line" t-as="element" t-key="element_index">
                     <t t-esc="element" />
                 </td>

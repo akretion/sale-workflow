@@ -7,6 +7,7 @@ class ProductTemplate(models.Model):
     def _find_price_config(self):
         return self.env["sale.price.config"].search(
             [
+                "&",
                 ("product_id", "=", self.id),
                 (
                     "start_date",
