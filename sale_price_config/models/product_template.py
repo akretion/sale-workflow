@@ -1,11 +1,12 @@
 from odoo import fields, models
+from odoo.exceptions import UserError
 
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     def _find_price_config(self):
-        return self.env["sale.price.config"].search(
+        price_configs = self.env["sale.price.config"].search(
             [
                 "&",
                 ("product_id", "=", self.id),
@@ -22,4 +23,14 @@ class ProductTemplate(models.Model):
                 ),
                 ("end_date", "=", False),
             ]
-        )[0]
+        )
+
+        if len(price_configs) > 1:
+            raise UserError(
+                "There is more than one active price configuration for this product"
+            )
+
+        if price_configs:
+            return price_configs[0]
+        else:
+            return False
