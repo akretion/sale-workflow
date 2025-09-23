@@ -31,14 +31,14 @@
                     class="fa fa-gear"
                     type="object"
                     title="Info"
-                    attrs="{'invisible': [('input_line_id', '=', False)]}"
+                    invisible="input_line_id == False"
                 />
                 <button
                     name="action_run_copy_data_wizard"
                     class="fa fa-paste"
                     type="object"
                     title="Info"
-                    attrs="{'invisible': [('input_line_id', '=', False)]}"
+                    invisible="input_line_id == False"
                 />
                 <field name="input_line_id" column_invisible="1" />
                 <field name="input_line_id_name" />

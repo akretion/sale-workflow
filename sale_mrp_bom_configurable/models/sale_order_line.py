@@ -33,7 +33,7 @@ class SaleOrderLine(models.Model):
             ]
         return super().copy_data(default)
 
-    @api.depends("product_template_id", "input_line_id")
+    @api.depends("product_id", "input_line_id")
     def _compute_is_static_product(self):
         for rec in self:
             rec.is_static_product = not bool(rec.input_line_id)
@@ -42,12 +42,17 @@ class SaleOrderLine(models.Model):
         vals = {"name": "A1"}
         return vals
 
-    @api.onchange("product_template_id")
+    @api.onchange("product_id")
     def onchange_product_template_id(self):
         to_change = {}
         input_line_to_delete = []
         for rec in self:
             template_variable_boms = rec._get_variable_bom()
+            if rec.input_line_id and len(template_variable_boms) == 0:
+                input_line_to_delete.append(rec.input_line_id.id)
+                rec.input_line_ids = [(5, 0, 0)]
+                continue
+
             if rec.product_template_id and len(template_variable_boms) > 0:
                 input_line = rec.input_line_id
                 if not input_line:
@@ -57,10 +62,8 @@ class SaleOrderLine(models.Model):
                         )
                 elif input_line.bom_id.product_tmpl_id != rec.product_template_id:
                     to_change[rec.id] = rec.input_line_id.copy_data()[0]
-                    input_line_to_delete = rec.input_line_ids.mapped("id")
+                    input_line_to_delete.append(rec.input_line_id.id)
                     rec.input_line_ids = [(5, 0, 0)]
-
-        self.env["input.line"].search([("id", "in", input_line_to_delete)]).unlink()
 
         for rec in self:
             if rec.id in to_change:
@@ -93,7 +96,7 @@ class SaleOrderLine(models.Model):
         # product template
         order_id = (
             self.env["sale.order"].browse(self.order_id.id.origin)
-            if self.order_id.id.origin
+            if getattr(self.order_id.id, "origin", False)
             else self.order_id
         )
         input_config_filtered = list(
@@ -108,7 +111,7 @@ class SaleOrderLine(models.Model):
             input_config = self.env["input.config"].create(
                 {
                     "bom_id": template_variable_bom.id,
-                    "name": f"{order_id.name} - {self.name}",
+                    "name": f"{order_id.name} - {self.product_template_id.name}",
                 }
             )
             order_id.input_config_ids = [(4, input_config.id, 0)]
