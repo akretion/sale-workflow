@@ -34,28 +34,31 @@ class WizardPriceConfigMatrix(models.TransientModel):
 
     def write(self, vals):
         res = super().write(vals)
-        if "matrix" in vals and ";" not in vals["matrix"]:
-            lines_string = vals["matrix"].split("\n")
-            matrix = []
-            for line in lines_string:
-                new_line = line.split("\t")
-                new_line = [e for e in new_line if e != ""]
-                matrix.append(new_line)
+        if "matrix" in vals:
             csv_string = ""
+            if ";" not in vals["matrix"]:
+                lines_string = vals["matrix"].split("\n")
+                matrix = []
+                for line in lines_string:
+                    new_line = line.split("\t")
+                    new_line = [e for e in new_line if e != ""]
+                    matrix.append(new_line)
 
-            first_line_length = len(matrix[0])
+                first_line_length = len(matrix[0])
 
-            for line in matrix[1:]:
-                if len(line) != first_line_length:
-                    raise UserError(_("Matrix is not properly formatted"))
+                for line in matrix[1:]:
+                    if len(line) != first_line_length:
+                        raise UserError(_("Matrix is not properly formatted"))
 
-            for i_l, line in enumerate(matrix):
-                for i, el in enumerate(line):
-                    csv_string += el
-                    if i < len(line) - 1:
-                        csv_string += ";"
-                if i_l < len(matrix) - 1:
-                    csv_string += "\n"
+                for i_l, line in enumerate(matrix):
+                    for i, el in enumerate(line):
+                        csv_string += el
+                        if i < len(line) - 1:
+                            csv_string += ";"
+                    if i_l < len(matrix) - 1:
+                        csv_string += "\n"
+            else:
+                csv_string = vals["matrix"]
             self.price_config_line_id.matrix_values = csv_string
 
         if "vertical_value" in vals:
