@@ -59,7 +59,7 @@ class WizardPriceConfigMatrix(models.TransientModel):
                         csv_string += "\n"
             else:
                 csv_string = vals["matrix"]
-            self.price_config_line_id.matrix_values = csv_string
+            self.price_config_line_id.matrix_values = csv_string.replace(",", ".")
 
         if "vertical_value" in vals:
             self.price_config_line_id.vertical_value = vals["vertical_value"]
