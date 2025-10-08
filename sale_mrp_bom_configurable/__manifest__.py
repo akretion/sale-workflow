@@ -20,8 +20,6 @@
     "data": [
         "views/sale_order.xml",
         "views/sale_order_line.xml",
-        "wizard/wizard_copy_input_line_data.xml",
-        "security/ir.model.access.csv",
     ],
     "assets": {
         "web.assets_backend": [

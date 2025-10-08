@@ -26,11 +26,9 @@ class SaleOrderLine(models.Model):
     def copy_data(self, default=None):
         if default is None:
             default = {}
-        if "input_line_ids" not in default:
-            default["input_line_ids"] = [
-                Command.create(input_line.copy_data()[0])
-                for input_line in self.input_line_ids
-            ]
+        if "input_line_ids" not in default and self.input_line_id:
+            data = self.input_line_id.copy_data()[0]
+            default["input_line_ids"] = [Command.create(data)]
         return super().copy_data(default)
 
     @api.depends("product_id", "input_line_id")
@@ -38,8 +36,8 @@ class SaleOrderLine(models.Model):
         for rec in self:
             rec.is_static_product = not bool(rec.input_line_id)
 
-    def _prepare_default_input_line_vals(self):
-        vals = {"name": "A1"}
+    def _prepare_default_input_line_vals(self, bom_id):
+        vals = {"name": "A1", "bom_id": bom_id.id}
         return vals
 
     @api.onchange("product_id")
@@ -99,31 +97,12 @@ class SaleOrderLine(models.Model):
             if getattr(self.order_id.id, "origin", False)
             else self.order_id
         )
-        input_config_filtered = list(
-            filter(
-                lambda x: x.bom_id.id == template_variable_bom.id,
-                order_id.input_config_ids,
-            )
-        )
-        input_config = False
-        if len(input_config_filtered) == 0:
-            # create a new input_config
-            input_config = self.env["input.config"].create(
-                {
-                    "bom_id": template_variable_bom.id,
-                    "name": f"{order_id.name} - {self.product_template_id.name}",
-                }
-            )
-            order_id.input_config_ids = [(4, input_config.id, 0)]
-        else:
-            input_config = input_config_filtered[0]
 
-        vals = self._prepare_default_input_line_vals()
+        vals = self._prepare_default_input_line_vals(template_variable_bom)
 
         if copy_vals:
             vals.update(copy_vals)
 
-        vals["config_id"] = input_config.id
         input_line = self.env["input.line"].create(vals)
         self.input_line_ids = [(4, input_line.id, 0)]
 
@@ -158,7 +137,6 @@ class SaleOrderLine(models.Model):
         wizard_id = self.env["wizard.copy.input.line.data"].create(
             {
                 "input_line_id": self.input_line_id.id,
-                "input_config_id": self.input_line_id.config_id.id,
             }
         )
 

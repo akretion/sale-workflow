@@ -4,12 +4,6 @@ from odoo import api, fields, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    input_config_ids = fields.One2many(
-        comodel_name="input.config",
-        inverse_name="order_id",
-        string="Input configs",
-    )
-
     order_line_count = fields.Integer(
         string="Order lines count", compute="_compute_order_line_count"
     )

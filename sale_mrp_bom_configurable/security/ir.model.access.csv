@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-wizard_copy_input_line_data,Base wizard copy input line,model_wizard_copy_input_line_data,base.group_user,1,1,1,1
-wizard_copy_input_line_data_line,Base wizard copy input line data line,model_wizard_copy_input_line_data_line,base.group_user,1,1,1,1
