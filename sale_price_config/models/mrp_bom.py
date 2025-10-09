@@ -4,6 +4,9 @@ from odoo import fields, models
 class MrpBom(models.Model):
     _inherit = "mrp.bom"
 
+    def should_go_into_child(self, line):
+        return line.child_bom_id
+
     def get_bom_configured_data(self, input_line, quantity=1.0):
         self.ensure_one()
         result = []
@@ -15,7 +18,7 @@ class MrpBom(models.Model):
                 if line.use_formula_compute_qty
                 else line.product_qty
             ) * quantity
-            if line.child_bom_id:
+            if self.should_go_into_child(line):
                 result = result + line.child_bom_id.get_bom_configured_data(
                     input_line, line_quantity
                 )
