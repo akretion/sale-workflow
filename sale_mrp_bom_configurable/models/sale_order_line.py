@@ -14,6 +14,7 @@ class SaleOrderLine(models.Model):
     input_line_id = fields.Many2one(
         comodel_name="input.line",
         string="Input line",
+        copy=False,
     )
 
     input_line_id_name = fields.Char(
@@ -22,6 +23,15 @@ class SaleOrderLine(models.Model):
     input_line_domain = fields.Char()
 
     is_static_product = fields.Boolean(compute="_compute_is_static_product", store=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
+
+        for rec in res:
+            if rec.input_line_ids and not rec.input_line_id:
+                rec._onchange_input_line_ids()
+        return res
 
     def copy_data(self, default=None):
         if default is None:

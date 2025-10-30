@@ -5,7 +5,9 @@ from odoo.exceptions import UserError
 class InputLine(models.Model):
     _inherit = "input.line"
 
-    order_line_id = fields.Many2one(comodel_name="sale.order.line", ondelete="cascade")
+    order_line_id = fields.Many2one(
+        comodel_name="sale.order.line", ondelete="cascade", copy=False
+    )
 
     def write(self, vals):
         for rec in self:
