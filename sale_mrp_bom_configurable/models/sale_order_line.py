@@ -14,7 +14,6 @@ class SaleOrderLine(models.Model):
     input_line_id = fields.Many2one(
         comodel_name="input.line",
         string="Input line",
-        copy=False,
     )
 
     input_line_id_name = fields.Char(
@@ -34,12 +33,14 @@ class SaleOrderLine(models.Model):
         return res
 
     def copy_data(self, default=None):
-        if default is None:
-            default = {}
-        if "input_line_ids" not in default and self.input_line_id:
-            data = self.input_line_id.copy_data()[0]
-            default["input_line_ids"] = [Command.create(data)]
-        return super().copy_data(default)
+        vals_list = super().copy_data(default)
+        for vals in vals_list:
+            if "input_line_id" in vals and vals["input_line_id"]:
+                input_line_id = vals.pop("input_line_id")
+                input_line = self.env["input.line"].browse(input_line_id)
+                data = input_line.copy_data()[0]
+                vals["input_line_ids"] = [Command.create(data)]
+        return vals_list
 
     @api.depends("product_id", "input_line_id")
     def _compute_is_static_product(self):
