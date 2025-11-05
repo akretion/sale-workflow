@@ -14,7 +14,9 @@
     "maintainer": [
         "franzpoize",
     ],
-    "data": [],
+    "data": [
+        "views/product_template_views.xml",
+    ],
     "installable": True,
 }
 
