@@ -40,12 +40,12 @@ class TestSaleFixedDiscount(SavepointCase):
         """Tests multiple discounts in line with taxes."""
         # Apply a fixed discount
         self.sale_line1.discount_fixed = 10.0
+        self.sale_line1._onchange_discount_fixed()
         self.assertEqual(self.sale.amount_total, 218.50)
         # Try to add also a % discount
         with self.assertRaises(ValidationError):
             self.sale_line1.write({"discount": 50.0})
         # Apply a % discount
-        self.sale_line1._onchange_discount_fixed()
         self.sale_line1.discount_fixed = 0.0
         self.sale_line1.discount = 50.0
         self.sale_line1._onchange_discount()
@@ -61,11 +61,13 @@ class TestSaleFixedDiscount(SavepointCase):
                 "product_uom_qty": 1,
                 "product_id": self.product.id,
                 "tax_id": [(5,)],
+                "discount_fixed": 0,
             }
         )
         self.assertEqual(self.sale_line2.price_subtotal, 500.0)
         # Add a fixed discount
         self.sale_line2.discount_fixed = 100.0
+        self.sale_line2._onchange_discount_fixed()
         self.assertEqual(self.sale_line2.price_subtotal, 400.0)
         self.sale._amount_all()
         self.assertEqual(self.sale.amount_total, 630.0)
