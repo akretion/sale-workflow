@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
-        <record id="view_bank_statement_form" model="ir.ui.view">
-            <field name="model">account.bank.statement.line</field>
-            <field
+    <record id="view_bank_statement_form" model="ir.ui.view">
+        <field name="model">account.bank.statement.line</field>
+        <field
             name="inherit_id"
             ref="account_reconcile_oca.bank_statement_line_form_reconcile_view"
         />
-            <field name="arch" type="xml">
-                <field name="manual_partner_id" position="after">
-                    <field
+        <field name="arch" type="xml">
+            <field name="manual_partner_id" position="after">
+                <field
                     name="manual_sale_id"
-                    attrs="{'readonly': ['|', '|',('manual_reference', '=', False), ('is_reconciled', '=', True), ('manual_line_id', '!=', False)]}"
+                    readonly="manual_kind=='liquidity'"
+                    domain="[('invoice_status', 'in', ['no', 'to invoice'])]"
                     options="{'no_create': True}"
                 />
-                </field>
             </field>
-        </record>
-
+        </field>
+    </record>
 </odoo>

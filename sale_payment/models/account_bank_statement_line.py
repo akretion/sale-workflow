@@ -41,9 +41,6 @@ class AccountBankStatementLine(models.Model):
         data = self.reconcile_data_info.get("data", [])
         new_data = []
         for line in data:
-            if line["kind"] == "liquidity":
-                partner = self.manual_sale_id.commercial_partner_id or self.partner_id
-                line["partner_id"] = partner and partner.name_get()[0] or False
             if line["reference"] == self.manual_reference:
                 old_sale_id = line.get("sale_id") and line["sale_id"][0]
                 if old_sale_id != self.manual_sale_id.id:
@@ -53,14 +50,32 @@ class AccountBankStatementLine(models.Model):
                     else:
                         partner = self.partner_id
                         account = self.journal_id.suspense_account_id
-                    self.manual_partner_id = partner.id or False
+                    self.manual_partner_id = partner
+
+                    if self.manual_partner_id:
+                        partner_id = [
+                            self.manual_partner_id.id,
+                            self.manual_partner_id.display_name,
+                        ]
+                    else:
+                        partner_id = False
+
                     self.manual_account_id = account.id
+                    if self.manual_account_id:
+                        account_id = [
+                            self.manual_account_id.id,
+                            self.manual_account_id.display_name,
+                        ]
                     sale = self.manual_sale_id
+                    if sale:
+                        sale_id = [sale.id, sale.display_name]
+                    else:
+                        sale_id = False
                     line.update(
                         {
-                            "sale_id": sale and sale.name_get()[0] or False,
-                            "partner_id": partner and partner.name_get()[0] or False,
-                            "account_id": account.name_get()[0],
+                            "sale_id": sale_id,
+                            "partner_id": partner_id,
+                            "account_id": account_id,
                         }
                     )
             new_data.append(line)
@@ -70,6 +85,55 @@ class AccountBankStatementLine(models.Model):
             self.manual_reference,
         )
         self.can_reconcile = self.reconcile_data_info.get("can_reconcile", False)
+
+    def _check_line_changed(self, line):
+        res = super()._check_line_changed(line)
+        return res or (
+            self.manual_sale_id.id
+            != (line.get("sale_id", [False, False]) or [False])[0]
+        )
+
+    def _process_manual_reconcile_from_line(self, line):
+        res = super()._process_manual_reconcile_from_line(line)
+        self.manual_sale_id = (line.get("sale_id", [False, False]) or [False])[0]
+        return res
+
+    def _get_manual_delete_vals(self):
+        res = super()._get_manual_delete_vals(self)
+        res["manual_sale_id"] = False
+        return res
+
+    def _get_manual_reconcile_vals(self):
+        res = super()._get_manual_reconcile_vals()
+        if self.manual_sale_id:
+            res["sale_id"] = [self.manual_sale_id.id, self.manual_sale_id.display_name]
+        return res
+
+    def _get_reconcile_line(
+        self,
+        line,
+        kind,
+        is_counterpart=False,
+        max_amount=False,
+        from_unreconcile=False,
+        reconcile_auxiliary_id=False,
+        move=False,
+        is_reconciled=False,
+    ):
+        reconcile_auxiliary_id, lines = super()._get_reconcile_line(
+            line,
+            kind,
+            is_counterpart=is_counterpart,
+            max_amount=max_amount,
+            from_unreconcile=from_unreconcile,
+            reconcile_auxiliary_id=reconcile_auxiliary_id,
+            move=move,
+            is_reconciled=is_reconciled,
+        )
+        if line.sale_id:
+            # move or line ?
+            lines[0]["sale_id"] = [line.sale_id.id, line.sale_id.display_name]
+        return reconcile_auxiliary_id, lines
 
     # manage sale_id on aml at statement line creation
     def _prepare_move_line_default_vals(self, counterpart_account_id=None):

@@ -1,64 +1,54 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <record id="view_quotation_sale_payment_form" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree" />
+        <field name="arch" type="xml">
+            <field name="amount_total" position="after" />
+        </field>
+    </record>
 
-        <record id="view_quotation_sale_payment_form" model="ir.ui.view">
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_quotation_tree" />
-            <field name="arch" type="xml">
-                <field name="amount_total" position="after">
-                    <field
-                    name="amount_down_payment"
-                    widget="monetary"
-                    optional="hide"
-                />
-                </field>
-            </field>
-        </record>
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_information']" position="after">
+                <page name="payments" string="Payments">
+                    <group name="payment_lines">
+                        <field name="payment_line_ids" nolabel="1" readonly="True">
+                            <list>
+                                <field name="date" />
+                                <field name="journal_id" />
+                                <field name="partner_id" />
+                                <field name="debit" sum="Total Debit" />
+                                <field name="credit" sum="Total Credit" />
+                            </list>
+                        </field>
+                    </group>
+                    <group>
+                        <group name="payment_totals" string="Down payment">
+                            <field name="amount_down_payment" widget="monetary" />
+                            <field name="amount_residual" widget="monetary" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 
-        <record id="view_order_form" model="ir.ui.view">
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form" />
-            <field name="arch" type="xml">
-                <button name="payment_action_void" position="after">
-                    <button
-                    name="action_register_payment"
-                    type="object"
-                    attrs="{'invisible': ['|', ('amount_residual', '&lt;=', 0), ('invoice_status', '=', 'invoiced')]}"
-                    string="Register Payment"
-                    class="oe_highlight"
-                />
-                </button>
-                <xpath expr="//page[@name='other_information']" position="after">
-                  <page name="payments" string="Payments">
-                    <field name="amount_residual" invisible="1" />
-                    <field name="payment_line_ids" nolabel="1">
-                        <tree>
-                            <field name="date" />
-                            <field name="journal_id" />
-                            <field name="partner_id" />
-                            <field name="debit" sum="Total Debit" />
-                            <field name="credit" sum="Total Credit" />
-                        </tree>
-                    </field>
-                  </page>
-                </xpath>
-            </field>
-        </record>
-
-        <record id="view_sales_order_filter" model="ir.ui.view">
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_sales_order_filter" />
-            <field name="arch" type="xml">
-                <filter name="my_sale_orders_filter" position="before">
-                    <filter
+    <record id="view_sales_order_filter" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter" />
+        <field name="arch" type="xml">
+            <filter name="my_sale_orders_filter" position="before">
+                <filter
                     string="With Payment"
                     domain="[('payment_line_ids','!=',False)]"
                     help="Order With Payment"
                     name="with_payment"
                 />
-                    <separator />
-                </filter>
-            </field>
-        </record>
-
+                <separator />
+            </filter>
+        </field>
+    </record>
 </odoo>

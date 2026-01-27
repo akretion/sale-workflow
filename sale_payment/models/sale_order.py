@@ -1,26 +1,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.tools import float_round
 
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
-
-    def action_register_payment(self):
-        self.ensure_one()
-        return {
-            "name": _("Register Payment"),
-            "res_model": "sale.payment.register",
-            "view_mode": "form",
-            "context": {
-                "active_model": "sale.order",
-                "active_id": self.id,
-                "active_ids": self.ids,
-            },
-            "target": "new",
-            "type": "ir.actions.act_window",
-        }
 
     payment_line_ids = fields.One2many(
         "account.move.line",
@@ -33,11 +18,10 @@ class SaleOrder(models.Model):
         copy=False,
     )
     amount_down_payment = fields.Monetary(
-        compute="_compute_amount_down_payment", string="Down Payment Amount"
+        compute="_compute_amount_down_payment", string="Down Payment Amount", store=True
     )
-    # amount_residual : only used to hide 'Register Payment' button
     amount_residual = fields.Monetary(
-        compute="_compute_amount_down_payment", string="Residual"
+        compute="_compute_amount_down_payment", string="Residual", store=True
     )
 
     @api.depends(
@@ -46,6 +30,7 @@ class SaleOrder(models.Model):
         "payment_line_ids.amount_currency",
         "payment_line_ids.currency_id",
         "payment_line_ids.date",
+        "amount_total",
         "currency_id",
     )
     def _compute_amount_down_payment(self):
@@ -80,9 +65,3 @@ class SaleOrder(models.Model):
                 sale.amount_total - down_payment,
                 precision_rounding=sale.currency_id.rounding,
             )
-
-    def _prepare_invoice(self):
-        vals = super()._prepare_invoice()
-        if not vals.get("payment_reference"):
-            vals["payment_reference"] = self.name
-        return vals
