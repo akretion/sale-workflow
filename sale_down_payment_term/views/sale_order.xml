@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_payment.view_order_form" />
+        <field name="arch" type="xml">
+            <group name="payment_totals" position="after">
+                <group name="is_amount_reached" string="Amount threshold">
+                    <field name="is_so_confirmation_amount_reached" />
+                    <field name="is_preparation_confirmation_amount_reached" />
+                    <field name="is_picking_confirmation_amount_reached" />
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <record id="view_sales_order_filter" model="ir.ui.view">
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter" />
+        <field name="arch" type="xml">
+            <filter name="my_sale_orders_filter" position="before">
+                <filter
+                    string="Confirmation amount reached"
+                    domain="[('is_so_confirmation_amount_reached','=',True)]"
+                    name="is_so_confirmation_amount_reached"
+                />
+                <separator />
+            </filter>
+        </field>
+    </record>
+</odoo>
