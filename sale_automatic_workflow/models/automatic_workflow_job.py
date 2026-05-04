@@ -61,7 +61,7 @@ class AutomaticWorkflowJob(models.Model):
     @api.model
     def _validate_sale_orders(self, order_filter):
         sale_obj = self.env["sale.order"]
-        sales = sale_obj.search(order_filter)
+        sales = sale_obj.search(order_filter, limit=80)
         _logger.debug("Sale Orders to validate: %s", sales.ids)
         for sale in sales:
             with savepoint(self.env.cr):
@@ -86,7 +86,7 @@ class AutomaticWorkflowJob(models.Model):
     @api.model
     def _create_invoices(self, create_filter):
         sale_obj = self.env["sale.order"]
-        sales = sale_obj.search(create_filter)
+        sales = sale_obj.search(create_filter, limit=80)
         _logger.debug("Sale Orders to create Invoice: %s", sales.ids)
         for sale in sales:
             with savepoint(self.env.cr):
@@ -108,7 +108,7 @@ class AutomaticWorkflowJob(models.Model):
     @api.model
     def _validate_invoices(self, validate_invoice_filter):
         move_obj = self.env["account.move"]
-        invoices = move_obj.search(validate_invoice_filter)
+        invoices = move_obj.search(validate_invoice_filter, limit=80)
         _logger.debug("Invoices to validate: %s", invoices.ids)
         for invoice in invoices:
             with savepoint(self.env.cr):
@@ -154,7 +154,7 @@ class AutomaticWorkflowJob(models.Model):
     @api.model
     def _send_invoices(self, send_invoice_filter):
         move_obj = self.env["account.move"]
-        invoices = move_obj.search(send_invoice_filter)
+        invoices = move_obj.search(send_invoice_filter, limit=80)
         _logger.debug("Invoices to send: %s", invoices.ids)
         for invoice in invoices:
             with savepoint(self.env.cr):
@@ -194,7 +194,7 @@ class AutomaticWorkflowJob(models.Model):
     @api.model
     def _sale_done(self, sale_done_filter):
         sale_obj = self.env["sale.order"]
-        sales = sale_obj.search(sale_done_filter)
+        sales = sale_obj.search(sale_done_filter, limit=80)
         _logger.debug("Sale Orders to done: %s", sales.ids)
         for sale in sales:
             with savepoint(self.env.cr):
