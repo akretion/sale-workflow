@@ -33,13 +33,6 @@
                     title="Info"
                     invisible="input_line_id == False"
                 />
-                <button
-                    name="action_run_copy_data_wizard"
-                    class="fa fa-paste"
-                    type="object"
-                    title="Info"
-                    invisible="input_line_id == False"
-                />
                 <field name="input_line_id" column_invisible="1" />
                 <field name="input_line_id_name" />
                 <field name="input_line_ids" column_invisible="1" />
