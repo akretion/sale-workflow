@@ -27,15 +27,15 @@
                 position="after"
             >
                 <button
-                    name="action_show_input_line"
+                    name="action_show_product_config"
                     class="fa fa-gear"
                     type="object"
                     title="Info"
-                    invisible="input_line_id == False"
+                    invisible="product_config_id == False"
                 />
-                <field name="input_line_id" column_invisible="1" />
-                <field name="input_line_id_name" />
-                <field name="input_line_ids" column_invisible="1" />
+                <field name="product_config_id" column_invisible="1" />
+                <field name="product_config_id_name" />
+                <field name="product_config_ids" column_invisible="1" />
             </xpath>
         </field>
     </record>

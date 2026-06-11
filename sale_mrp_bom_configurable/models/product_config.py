@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 
 
 class InputLine(models.Model):
-    _inherit = "input.line"
+    _inherit = "product.config"
 
     order_line_id = fields.Many2one(
         comodel_name="sale.order.line", ondelete="cascade", copy=False

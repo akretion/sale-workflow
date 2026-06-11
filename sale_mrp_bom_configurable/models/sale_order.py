@@ -19,8 +19,8 @@ class SaleOrder(models.Model):
             "type": "ir.actions.act_window",
             "name": "Lines",
             "view_mode": "list",
-            "res_model": "input.line",
-            "view_id": self.env.ref("mrp_bom_configurable.input_line_tree").id,
+            "res_model": "product.config",
+            "view_id": self.env.ref("mrp_bom_configurable.product_config_tree").id,
             "domain": [
                 ("order_line_id.order_id", "=", self.id),
                 ("order_line_id.is_static_product", "=", False),
