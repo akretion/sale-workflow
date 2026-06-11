@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
@@ -10,10 +10,11 @@ class InputLine(models.Model):
     )
 
     def write(self, vals):
+        config_elements = self._get_config_elements()
         for rec in self:
             if rec.order_line_id.order_id.state == "sale":
-                for field_name in rec._get_config_elements():
+                for field_name in config_elements:
                     if field_name in vals:
-                        raise UserError("Can't change config when sale in confirmed")
+                        raise UserError(_("Can't change config when sale in confirmed"))
         res = super().write(vals)
         return res
