@@ -2,7 +2,6 @@
 <odoo>
     <record id="sale_order_line_tree_multi_edit" model="ir.ui.view">
         <field name="model">sale.order.line</field>
-        <field name="name">sale.order.line.tree.multi.edit</field>
         <field name="inherit_id" ref="sale.view_order_line_tree" />
         <field name="mode">extension</field>
         <field name="arch" type="xml">
@@ -13,7 +12,6 @@
             <field name="order_id" position="before">
                 <field name="company_id" invisible="1" />
                 <field name="product_id" invisible="1" />
-                <field name="product_uom_category_id" invisible="1" />
                 <field name="product_config_id_name" />
             </field>
             <field name="order_id" position="attributes">
@@ -35,12 +33,6 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="qty_to_invoice" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="product_uom" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="route_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="name" position="attributes">
