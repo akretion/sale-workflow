@@ -48,7 +48,7 @@ class SaleOrderLine(models.Model):
             rec.is_static_product = not bool(rec.input_line_id)
 
     def _prepare_default_input_line_vals(self, bom_id):
-        vals = {"name": "A1", "bom_id": bom_id.id}
+        vals = {"bom_id": bom_id.id}
         return vals
 
     @api.onchange("product_id")
