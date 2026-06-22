@@ -147,7 +147,7 @@ class SaleOrderLine(models.Model):
                 rec.product_config_id = False
 
     def _prepare_procurement_values(self, group_id=False):
-        vals = super()._prepare_procurement_values(group_id=group_id)
+        vals = super()._prepare_procurement_values()
         if self.lot_id:
             if not self.is_static_product:
                 self.lot_id.product_config_id = self.product_config_id.id
