@@ -28,14 +28,22 @@ class StockPicking(models.Model):
     )
     def _compute_picking_notes(self):
         for picking in self:
-            if picking.picking_type_id.code != "incoming" and picking.state not in (
-                "done",
-                "cancel",
+            if (
+                picking.picking_type_id.code != "incoming"
+                and picking.state
+                not in (
+                    "done",
+                    "cancel",
+                )
+                and not self.env.context.get("button_validate_picking_ids")
             ):
                 picking.note = (
-                    picking.sale_id.picking_note or picking.partner_id.picking_note
+                    picking.backorder_id.note
+                    or picking.sale_id.picking_note
+                    or picking.partner_id.picking_note
                 )
                 picking.customer_note = (
-                    picking.sale_id.picking_customer_note
+                    picking.backorder_id.customer_note
+                    or picking.sale_id.picking_customer_note
                     or picking.partner_id.picking_customer_note
                 )
