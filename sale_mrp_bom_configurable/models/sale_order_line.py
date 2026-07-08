@@ -162,7 +162,7 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Input line information",
+            "name": "Configuration",
             "res_model": "product.config",
             "view_mode": "form",
             "target": "new",
