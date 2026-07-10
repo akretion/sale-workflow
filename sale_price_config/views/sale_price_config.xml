@@ -84,6 +84,20 @@
             </list>
         </field>
     </record>
+    <record id="price_config_line_filter" model="ir.ui.view">
+        <field name="name">sale.price.config.line.search</field>
+        <field name="model">sale.price.config.line</field>
+        <field name="arch" type="xml">
+            <search string="Search price config line">
+                <field
+                    name="product_id" />
+                <field
+                    name="line_type" />
+                <field
+                    name="domain" />
+            </search>
+        </field>
+    </record>
     <record id="sale_price_config_line_tree_view" model="ir.ui.view">
         <field name="model">sale.price.config.line</field>
         <field name="arch" type="xml">
@@ -95,7 +109,7 @@
                     widget="domain"
                     options="{'model': 'input.line'}"
                 />
-                <field name="target_field_domain" invisible="True" />
+                <field name="target_field_domain" column_invisible="True" />
                 <field
                     name="target_field"
                     domain="target_field_domain"

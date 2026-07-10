@@ -1,5 +1,31 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="sale_price_config_line_wizard_tree_view" model="ir.ui.view">
+        <field name="model">sale.price.config.line</field>
+        <field name="arch" type="xml">
+            <list default_order="product_id_name,sequence" create="false">
+                <field name="sale_price_config_id" />
+                <field name="line_type" />
+                <field
+                    name="domain"
+                    widget="domain"
+                    options="{'model': 'input.line'}"
+                />
+                <field name="target_field_domain" column_invisible="True" />
+                <field
+                    name="target_field"
+                    domain="target_field_domain"
+                    invisible="line_type != 'factor'"
+                    required="line_type == 'factor'"
+                />
+                <field
+                    name="included_product_or_category"
+                    invisible="line_type != 'include_product_or_category'"
+                    required="line_type == 'include_product_or_category'"
+                />
+            </list>
+        </field>
+    </record>
     <record id="wiz_sale_price_change" model="ir.ui.view">
         <field name="model">wizard.sale.price.config.change</field>
         <field name="arch" type="xml">
@@ -17,8 +43,35 @@
                         <page name="Config lines">
                             <field
                                 name="price_config_line_ids"
-                                domain="[('sale_price_config_id.start_date', '&lt;', context_today().strftime('%Y-%m-%d 00:00:00')), '|', ('sale_price_config_id.end_date', '&gt;', context_today().strftime('%Y-%m-%d 00:00:00')), ('sale_price_config_id.end_date', '=', False)]"
-                            />
+                                domain="[
+                                ('sale_price_config_id.start_date', '&lt;', start_of_change),
+                                '|', ('sale_price_config_id.end_date', '&gt;', start_of_change), ('sale_price_config_id.end_date', '=', False)]"
+                                context="{
+                                    'list_view_ref': 'sale_price_config.sale_price_config_line_wizard_tree_view',
+                                    'search_view_ref': 'sale_price_config.price_config_line_filter'
+                                }"
+                            >
+                                <list create="false">
+                                    <field name="sale_price_config_id" />
+                                    <field name="line_type" />
+                                    <field
+                                        name="domain"
+                                        widget="domain"
+                                        options="{'model': 'input.line'}"
+                                    />
+                                    <field
+                                        name="target_field"
+                                        domain="target_field_domain"
+                                        invisible="line_type != 'factor'"
+                                        required="line_type == 'factor'"
+                                    />
+                                    <field
+                                        name="included_product_or_category"
+                                        invisible="line_type != 'include_product_or_category'"
+                                        required="line_type == 'include_product_or_category'"
+                                    />
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

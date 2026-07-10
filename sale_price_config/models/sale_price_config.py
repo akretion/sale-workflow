@@ -54,6 +54,8 @@ class SalePriceConfigLine(models.Model):
     _description = "Component of sale price config"
     _order = "sequence,id"
 
+    product_id = fields.Many2one(related="sale_price_config_id.product_id")
+    product_id_name = fields.Char(related="product_id.name")
     sequence = fields.Integer(
         default=10, help="Gives the sequence order when displaying a list of records."
     )

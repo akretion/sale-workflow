@@ -54,6 +54,7 @@ class WizSalePriceConfigChange(models.TransientModel):
                 new_line_data = self._prepare_line_data_from_old(new_config_id, line)
             else:
                 new_line_data = line.copy_data()[0]
+                new_line_data["sale_price_config_id"] = new_config_id.id
             self.env["sale.price.config.line"].create(new_line_data)
 
     def apply_change(self):
