@@ -12,13 +12,14 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     delivery_status = fields.Selection(
-        [
-            ("pending", "Not Delivered"),
-            ("partial", "Partially Delivered"),
-            ("full", "Fully Delivered"),
-        ],
         # Compute method have a different name then the field because
-        # the method _compute_delivery_status already exist in odoo sale_stock
+        # the method _compute_delivery_status already exist in odoo sale_stock.
+        # No selection is declared here on purpose: when sale_stock is
+        # installed it already defines this field with the same
+        # pending/partial/full keys (plus "started", unused by this
+        # module), so redeclaring it triggers an "overrides existing
+        # selection" warning. Without sale_stock, Odoo keeps the
+        # selection from the base sale.order field declaration below.
         compute="_compute_oca_delivery_status",
         store=True,
     )
