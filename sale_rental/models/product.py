@@ -78,7 +78,7 @@ class ProductTemplate(models.Model):
 
     def _inverse_rented_product_tmpl_id(self):
         for template in self:
-            if len(template.product_variant_ids) == 1:
+            if not template.product_variant_ids.product_template_attribute_value_ids:
                 template.product_variant_ids.rented_product_id = (
                     template.rented_product_tmpl_id.product_variant_ids[0].id
                 )
