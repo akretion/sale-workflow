@@ -26,9 +26,11 @@ class SaleOrderLine(models.Model):
                     rec = rec.with_context(
                         price_config=rec.product_id.product_tmpl_id._find_price_config(),
                         input_line=rec.input_line_id,
+                        force_price_recomputation=True,
                     )
                     rec.should_compute_price = False
                     super(SaleOrderLine, rec)._compute_price_unit()
+                    rec.technical_price_unit = rec.price_unit
             else:
                 super(SaleOrderLine, rec)._compute_price_unit()
         return True
