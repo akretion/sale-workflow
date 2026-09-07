@@ -14,7 +14,7 @@ class Partner(models.Model):
         "pickings but will not be printed "
         "on the delivery slip.",
     )
-    picking_customer_note = fields.Text(
+    picking_customer_note = fields.Html(
         string="Picking Customer Comments",
         help="The notes will be added to the sales order and"
         "pickings and will be printed on "

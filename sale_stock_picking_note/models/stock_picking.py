@@ -7,7 +7,7 @@ from odoo import api, fields, models
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    customer_note = fields.Text(
+    customer_note = fields.Html(
         string="Customer Comments",
         compute="_compute_picking_notes",
         store=True,

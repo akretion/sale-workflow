@@ -15,7 +15,7 @@ class SaleOrder(models.Model):
         store=True,
         readonly=False,
     )
-    picking_customer_note = fields.Text(
+    picking_customer_note = fields.Html(
         string="Picking Customer Comments",
         compute="_compute_picking_notes",
         store=True,
