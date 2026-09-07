@@ -35,7 +35,13 @@ class WizSalePriceConfigChange(models.TransientModel):
                                 new_matrix_line_data.append(element)
                             else:
                                 new_matrix_line_data.append(
-                                    str(self.change_amount(int(element)))
+                                    str(
+                                        round(
+                                            self.change_amount(
+                                                float(element.replace(",", "."))
+                                            )
+                                        )
+                                    )
                                 )
                         new_matrix_line = ";".join(new_matrix_line_data)
                     new_matrix += new_matrix_line + "\n"
