@@ -61,7 +61,11 @@ class TestSaleStockReadonly(BaseCommon):
         )
 
     def _form_arch(self, user):
-        return self.env["sale.order"].with_user(user).get_view(view_type="form")["arch"]
+        arch = self.env["sale.order"].with_user(user).get_view(view_type="form")["arch"]
+        # In some environments, `get_view` returns the arch as bytes instead of str?
+        if isinstance(arch, bytes):
+            arch = arch.decode()
+        return arch
 
     def test_delivery_button_visibility(self):
         self.assertIn(
