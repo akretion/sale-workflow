@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_order_form_inherit_sale_project_readonly" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.project.readonly</field>
+        <field name="model">sale.order</field>
+        <field
+            name="inherit_id"
+            ref="sale_project.view_order_form_inherit_sale_project"
+        />
+        <field name="arch" type="xml">
+            <button name="action_view_project_ids" position="attributes">
+                <attribute
+                    name="groups"
+                    add="project_readonly.group_project_readonly"
+                    separator=","
+                />
+            </button>
+            <field name="project_id" position="attributes">
+                <attribute
+                    name="groups"
+                    add="project_readonly.group_project_readonly"
+                    separator=","
+                />
+            </field>
+        </field>
+    </record>
+
+    <record
+        id="view_sales_order_filter_inherit_sale_project_readonly"
+        model="ir.ui.view"
+    >
+        <field name="name">sale.order.list.select.inherit.sale.project.readonly</field>
+        <field name="model">sale.order</field>
+        <field
+            name="inherit_id"
+            ref="sale_project.view_sales_order_filter_inherit_sale_project"
+        />
+        <field name="arch" type="xml">
+            <field name="project_id" position="attributes">
+                <attribute
+                    name="groups"
+                    add="project_readonly.group_project_readonly"
+                    separator=","
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
