@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import api, exceptions, fields, models
-from odoo.tools.misc import formatLang
 
 
 class SaleOrder(models.Model):
@@ -101,126 +100,87 @@ class SaleOrder(models.Model):
         for order in self:
             order._check_global_discounts_sanity()
             amount_untaxed_before_global_discounts = order.amount_untaxed
-            amount_total_before_global_discounts = order.amount_total
-            discounts = order.global_discount_ids.mapped("discount")
-            amount_discounted_untaxed = amount_discounted_tax = 0
-            for line in order.order_line:
-                discounted_subtotal = line.price_subtotal
-                if not line.product_id.bypass_global_discount:
-                    discounted_subtotal = self.get_discounted_global(
-                        line.price_subtotal, discounts.copy()
-                    )
-                amount_discounted_untaxed += discounted_subtotal
-                discounted_tax = line.tax_id.with_context(
-                    force_price_include=False
-                ).compute_all(
-                    discounted_subtotal,
-                    line.order_id.currency_id,
-                    1.0,
-                    product=line.product_id,
-                    partner=line.order_id.partner_shipping_id,
+            values = {
+                "amount_untaxed_before_global_discounts": (
+                    amount_untaxed_before_global_discounts
+                ),
+                "amount_total_before_global_discounts": order.amount_total,
+            }
+            if order.global_discount_ids:
+                tax_totals = order._get_global_discount_tax_totals()
+                values.update(
+                    {
+                        "amount_global_discount": (
+                            amount_untaxed_before_global_discounts
+                            - tax_totals["base_amount_currency"]
+                        ),
+                        "amount_untaxed": tax_totals["base_amount_currency"],
+                        "amount_tax": tax_totals["tax_amount_currency"],
+                        "amount_total": tax_totals["total_amount_currency"],
+                    }
                 )
-                amount_discounted_tax += sum(
-                    t.get("amount", 0.0) for t in discounted_tax.get("taxes", [])
-                )
-            order.update(
-                {
-                    "amount_untaxed_before_global_discounts": (
-                        amount_untaxed_before_global_discounts
-                    ),
-                    "amount_total_before_global_discounts": (
-                        amount_total_before_global_discounts
-                    ),
-                    "amount_global_discount": (
-                        amount_untaxed_before_global_discounts
-                        - amount_discounted_untaxed
-                    ),
-                    "amount_untaxed": amount_discounted_untaxed,
-                    "amount_tax": amount_discounted_tax,
-                    "amount_total": (amount_discounted_untaxed + amount_discounted_tax),
-                }
-            )
+            else:
+                # Without global discount, the amounts computed by the standard
+                # tax engine are already the right ones: recomputing them here
+                # would drop everything injected on the tax base lines by other
+                # modules (e.g. the ecotax amount computed from the ecotax
+                # lines of the document).
+                values["amount_global_discount"] = 0.0
+            order.update(values)
         return res
 
+    @api.depends(
+        "order_line.price_subtotal",
+        "currency_id",
+        "company_id",
+        "payment_term_id",
+        "global_discount_ids",
+    )
     def _compute_tax_totals(self):
         res = super()._compute_tax_totals()
         for order in self:
-            amount_discount_by_group = {}
-            cumulative_discount_rate = 1.0
-            currency = order.currency_id
-            # Calculate cumulative discount rate
-            for gbl_disc in order.global_discount_ids:
-                discount_rate = gbl_disc.discount / 100
-                cumulative_discount_rate *= 1 - discount_rate
-            base_amount = 0.0
-            # Calculate the total discount amount and discount by tax group
-            for line in order.order_line:
-                if line.display_type or not line.product_id:
-                    continue
-                # Apply cumulative discount rate only if bypass_global_discount is False
-                if not line.product_id.bypass_global_discount:
-                    discounted_price_subtotal = (
-                        line.price_subtotal * cumulative_discount_rate
-                    )
-                else:
-                    discounted_price_subtotal = line.price_subtotal
-                base_amount += discounted_price_subtotal
-                # Calculate tax amounts for each tax group based on the discounted
-                # subtotal
-                for tax in line.tax_id:
-                    tax_group_id = tax.tax_group_id.id
-                    if tax_group_id not in amount_discount_by_group:
-                        amount_discount_by_group[tax_group_id] = 0.0
-                    # Compute taxes on the correct base amount
-                    discounted_tax_vals = tax.with_context(
-                        force_price_include=False
-                    ).compute_all(
-                        discounted_price_subtotal,
-                        currency,
-                        1.0,
-                        product=line.product_id,
-                        partner=order.partner_shipping_id,
-                    )
-                    amount_discount_by_group[tax_group_id] += sum(
-                        t.get("amount", 0.0)
-                        for t in discounted_tax_vals.get("taxes", [])
-                    )
-            # Calculate the final amount total
-            total_amount = base_amount + sum(amount_discount_by_group.values())
-            base_amount_currency = formatLang(
-                self.env, base_amount, currency_obj=currency
-            )
-            order.tax_totals.update(
-                {
-                    "base_amount": base_amount,
-                    "total_amount": total_amount,
-                    "base_amount_currency": base_amount,
-                    "total_amount_currency": total_amount,
-                }
-            )
-            # Update subtotals and groups by subtotal
-            for group in order.tax_totals["subtotals"]:
-                group.update(
-                    {
-                        "base_amount": base_amount,
-                        "base_amount_currency": base_amount,
-                        "amount": base_amount,
-                        "formatted_amount": base_amount_currency,
-                    }
-                )
-                for tax_group in group["tax_groups"]:
-                    discounted_tax_amount = amount_discount_by_group.get(
-                        tax_group["id"], 0.0
-                    )
-                    tax_group.update(
-                        {
-                            "base_amount": base_amount,
-                            "base_amount_currency": base_amount,
-                            "tax_amount": discounted_tax_amount,
-                            "tax_amount_currency": discounted_tax_amount,
-                        }
-                    )
+            if order.global_discount_ids:
+                order.tax_totals = order._get_global_discount_tax_totals()
         return res
+
+    def _get_global_discount_base_lines(self):
+        """Return the order lines as tax base lines, discounts applied.
+
+        The global discount is applied on the untaxed amount of the line, and
+        the rest of the computation is left to the tax engine, with the line
+        as record: the amounts injected on the base line by other modules
+        (the ecotax amount, for instance) are kept.
+        """
+        self.ensure_one()
+        account_tax = self.env["account.tax"]
+        discounts = self.global_discount_ids.mapped("discount")
+        base_lines = []
+        for line in self._get_priced_lines().filtered("product_id"):
+            price_subtotal = line.price_subtotal
+            if not line.product_id.bypass_global_discount:
+                price_subtotal = self.get_discounted_global(
+                    price_subtotal, discounts.copy()
+                )
+            base_lines.append(
+                line._prepare_base_line_for_taxes_computation(
+                    price_unit=price_subtotal,
+                    quantity=1.0,
+                    discount=0.0,
+                    special_mode="total_excluded",
+                )
+            )
+        account_tax._add_tax_details_in_base_lines(base_lines, self.company_id)
+        account_tax._round_base_lines_tax_details(base_lines, self.company_id)
+        return base_lines
+
+    def _get_global_discount_tax_totals(self):
+        """Return the tax totals of the order, global discounts applied."""
+        self.ensure_one()
+        return self.env["account.tax"]._get_tax_totals_summary(
+            base_lines=self._get_global_discount_base_lines(),
+            currency=self.currency_id or self.company_id.currency_id,
+            company=self.company_id,
+        )
 
     @api.depends("partner_id", "company_id")
     def _compute_global_discount_ids(self):

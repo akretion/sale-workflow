@@ -1,6 +1,8 @@
 # Copyright 2020 Tecnativa - David Vidal
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from unittest.mock import patch
+
 from odoo import exceptions
 from odoo.tests import Form, tagged
 
@@ -114,6 +116,32 @@ class TestSaleGlobalDiscount(AccountTestInvoicingCommon):
                 tax_group["tax_amount"] for tax_group in subtotal["tax_groups"]
             )
         return tax_amount_total
+
+    def _patch_injected_tax_amount(self, amount):
+        """Emulate an amount injected on the tax base line.
+
+        Some modules inject the tax amount instead of letting the tax compute
+        it, from the document line kept as record on the base line (this is
+        what ``account_ecotax_tax`` does with the ecotax lines amount).
+        """
+        account_tax_model = type(self.env["account.tax"])
+        add_tax_details = account_tax_model._add_tax_details_in_base_line
+
+        def _add_tax_details_in_base_line(
+            tax, base_line, company, rounding_method=None
+        ):
+            if base_line.get("record"):
+                base_line["manual_tax_amounts"] = {
+                    str(base_tax.id): {"tax_amount_currency": amount}
+                    for base_tax in base_line["tax_ids"]
+                }
+            return add_tax_details(tax, base_line, company, rounding_method)
+
+        return patch.object(
+            account_tax_model,
+            "_add_tax_details_in_base_line",
+            _add_tax_details_in_base_line,
+        )
 
     def test_01_global_sale_successive_discounts(self):
         """Add global discounts to the sale order"""
@@ -268,6 +296,43 @@ class TestSaleGlobalDiscount(AccountTestInvoicingCommon):
         self.assertTrue(
             self.sale.amount_total < self.sale.amount_total_before_global_discounts
         )
+        self.assertAlmostEqual(
+            self.get_taxes_widget_total_tax(self.sale), self.sale.amount_tax
+        )
+
+    def test_09_injected_tax_amount_without_global_discount(self):
+        """The amounts injected on the base lines must be kept on the totals.
+
+        Without global discount, the module must not recompute the amounts
+        computed by the tax engine: doing so drops everything injected on the
+        base lines by other modules (the ecotax amount, for instance).
+        """
+        self.assertFalse(self.sale.global_discount_ids)
+        with self._patch_injected_tax_amount(100.0):
+            self.sale._compute_amounts()
+            self.sale._compute_tax_totals()
+        # 2 lines x 2 taxes x 100.0 injected
+        self.assertAlmostEqual(self.sale.amount_tax, 400.0)
+        self.assertAlmostEqual(self.sale.amount_untaxed, 249.99)
+        self.assertAlmostEqual(self.sale.amount_global_discount, 0.0)
+        self.assertAlmostEqual(
+            self.get_taxes_widget_total_tax(self.sale), self.sale.amount_tax
+        )
+
+    def test_10_injected_tax_amount_with_global_discount(self):
+        """The amounts injected on the base lines survive the global discount.
+
+        The discount applies to the untaxed amount of the line, the injected
+        amount does not depend on it.
+        """
+        self.sale.global_discount_ids = self.global_discount_1
+        with self._patch_injected_tax_amount(100.0):
+            self.sale._compute_amounts()
+            self.sale._compute_tax_totals()
+        self.assertAlmostEqual(self.sale.amount_untaxed, 199.99)
+        self.assertAlmostEqual(self.sale.amount_global_discount, 50.0)
+        self.assertAlmostEqual(self.sale.amount_tax, 400.0)
+        self.assertAlmostEqual(self.sale.amount_total, 599.99)
         self.assertAlmostEqual(
             self.get_taxes_widget_total_tax(self.sale), self.sale.amount_tax
         )
