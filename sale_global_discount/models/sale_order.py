@@ -62,13 +62,22 @@ class SaleOrder(models.Model):
         return discounted_price
 
     def _check_global_discounts_sanity(self):
-        """Perform a sanity check for discarding cases that will lead to
-        incorrect data in discounts.
+        """Check that the global discounts can be applied on the order lines.
+
+        The global discount is computed on the untaxed amount of each line and
+        the taxes are then computed by the tax engine on the resulting base
+        lines, one per order line. Lines with different taxes are therefore
+        supported (a line with the ecotax and a line without it, for instance)
+        and so are the taxes sharing only a part of their rates.
+
+        The taxes are however still required on every line: posting the
+        discounts as invoice lines is done per tax combination, so a line
+        without any tax could not receive the discount line matching its base
+        (see ``_set_global_discounts_by_tax`` in ``account_global_discount``).
         """
         self.ensure_one()
         if not self.global_discount_ids:
             return True
-        taxes_keys = {}
         for line in self.order_line.filtered(
             lambda _line: not _line.display_type
             and _line.product_id
@@ -78,15 +87,6 @@ class SaleOrder(models.Model):
                 raise exceptions.UserError(
                     self.env._("With global discounts, taxes in lines are required.")
                 )
-            for key in taxes_keys:
-                if key == line.tax_id:
-                    break
-                elif key & line.tax_id:
-                    raise exceptions.UserError(
-                        self.env._("Incompatible taxes found for global discounts.")
-                    )
-            else:
-                taxes_keys[line.tax_id] = True
 
     @api.depends(
         "order_line.product_id.bypass_global_discount",

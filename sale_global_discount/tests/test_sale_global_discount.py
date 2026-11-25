@@ -243,13 +243,37 @@ class TestSaleGlobalDiscount(AccountTestInvoicingCommon):
         self.assertEqual(len(discount_lines), 2)
         self.assertAlmostEqual(sum(discount_lines.mapped("debit")), 162.49)
 
-    def test_04_incompatible_taxes(self):
-        # Line 1 with tax 1 and tax 2
-        # Line 2 with only tax 2
+    def test_04_mixed_taxes(self):
+        """Lines with different taxes are supported.
+
+        A global discount must stay usable on a document mixing lines with and
+        without a specific tax (the ecotax, for instance): the discount applies
+        on the untaxed amount of each line, whatever its taxes.
+        """
+        # Line 2 (3 x 33.33) with tax 1 only, line 1 with tax 1 and tax 2
         self.sale.order_line[1].tax_id = [(6, 0, self.tax_1.ids)]
-        with self.assertRaises(exceptions.UserError):
-            self.sale.global_discount_ids = self.global_discount_1
-            self.sale._compute_amounts()
+        self.sale.global_discount_ids = self.global_discount_1
+        self.sale._compute_amounts()
+        self.sale._compute_tax_totals()
+        self.assertAlmostEqual(self.sale.amount_untaxed_before_global_discounts, 249.99)
+        self.assertAlmostEqual(self.sale.amount_global_discount, 50.0)
+        self.assertAlmostEqual(self.sale.amount_untaxed, 199.99)
+        # 120.00 x (15% + 5%) + 79.99 x 15%
+        self.assertAlmostEqual(self.sale.amount_tax, 36.0)
+        self.assertAlmostEqual(self.sale.amount_total, 235.99)
+        self.assertAlmostEqual(
+            self.get_taxes_widget_total_tax(self.sale), self.sale.amount_tax
+        )
+        # One discount line per tax combination on the invoice
+        self.sale.order_line.mapped("product_id").write({"invoice_policy": "order"})
+        self.sale.action_confirm()
+        move = self.sale._create_invoices()
+        self.assertEqual(len(move.invoice_global_discount_ids), 2)
+        discount_lines = move.line_ids.filtered("invoice_global_discount_id")
+        self.assertEqual(len(discount_lines), 2)
+        self.assertAlmostEqual(sum(discount_lines.mapped("debit")), 50.0)
+        self.assertAlmostEqual(move.amount_untaxed, 199.99)
+        self.assertAlmostEqual(move.amount_total, 235.99)
 
     def test_05_no_taxes(self):
         self.sale.order_line[1].tax_id = False
