@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record
+        id="sale_automatic_workflow.automatic_workflow_create_invoice_filter"
+        model="ir.filters"
+    >
+        <field
+            name="domain"
+        >[('state','=','sale'), ('locked', '=', False), ('invoice_status','=','to invoice'), ('no_reinvoicing', '=', False)]</field>
+    </record>
+</odoo>
